@@ -13,11 +13,7 @@
 import java.io.Serializable;
 
 public class Message implements Serializable {
-    protected String data;
-    protected Client fromClient;
-    protected Client toClient;
-    protected Server fromServer;
-    protected Server toServer;
+    private String data;
 
     /**
      * default constructor for Message
@@ -25,11 +21,18 @@ public class Message implements Serializable {
      * @return: null
      */
     public Message() {
-        this.data = "[NO MESSAGES]";
+        this.data = "[UNDEFINED]";
+    }
+
+    public Message(String msg) {
+        this.data = msg;
     }
 
     public String getData() {
         return this.data;
     }
 
+    public void setData(String msg) {
+        this.data = msg;
+    }
 }
