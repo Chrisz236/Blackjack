@@ -32,7 +32,7 @@ public class Message implements Serializable {
         return this.data;
     }
 
-    public void setDate(String msg) {
+    public void setData(String msg) {
         this.data = msg;
     }
 }
