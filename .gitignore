@@ -24,3 +24,7 @@ hs_err_pid*
 
 # Mac index file
 .DS_Store
+
+# Intellj IDE
+.idea
+*.iml
