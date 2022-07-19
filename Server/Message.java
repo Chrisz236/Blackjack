@@ -13,6 +13,7 @@ import java.io.Serializable;
 
 public class Message implements Serializable {
     private String data;
+    private String type;
 
     /*
      * default constructor for Message
@@ -21,14 +22,16 @@ public class Message implements Serializable {
      */
     public Message() {
         this.data = "[UNDEFINED]";
+        this.type = "[UNDEFINED]";
     }
 
     /*
      * constructor for Message with parameter
      * @param msg
      */
-    public Message(String msg) {
+    public Message(String msg, String type) {
         this.data = msg;
+        this.type = type;
     }
 
     /*
@@ -45,5 +48,21 @@ public class Message implements Serializable {
      */
     public void setData(String msg) {
         this.data = msg;
+    }
+
+    /*
+     * member function to get type from Message object
+     * @return String
+     */
+    public String getType() {
+        return this.type;
+    }
+
+    /*
+     * member function to set type of the Message object
+     * @param msg
+     */
+    public void setType(String type) {
+        this.type = type;
     }
 }
