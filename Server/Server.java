@@ -1,22 +1,23 @@
 import java.io.*;
 import java.net.*;
+import java.nio.channels.ServerSocketChannel;
 import java.util.*;
 
-public class Server implements Runnable {
-
-    String hostname;
-    int port;
-    private static String fileName = "Server/userFile.txt";
+public class Server {
+    private String hostname;
+    private int port;
+    private boolean online = false;
+    private int numOfClient;
     Map<String, Account> clientInfo = new HashMap<>();
     // LobbyManager lobbyManager = new LobbyManager();
-
-    boolean online = false;
 
     public Server(String host, int port) {
         this.hostname = host;
         this.port = port;
-        System.out.println(this.toString());
+        this.online = true;
+        this.numOfClient = 0;
         loadUserData();
+        System.out.println(this.toString());
     }
 
     /*
@@ -37,11 +38,17 @@ public class Server implements Runnable {
         return false;
     }
 
+    /*
+        load userFile.txt to Map clientInfo
+        associate Key: String username, Value: Account account
+        initialize clientInfo
+     */
     public void loadUserData() {
         // localData[0] = USERNAME
         // localData[1] = PASSWORD
         // localData[2] = BALANCE
         try {
+            String fileName = "Server/userFile.txt";
             File file = new File(fileName);
             FileReader fr = new FileReader(file);
             BufferedReader br = new BufferedReader(fr);
@@ -62,6 +69,10 @@ public class Server implements Runnable {
         return clientInfo.get(username).getBalance(username);
     }
 
+    public void setPlayerBalance(String username, int amount) {
+        clientInfo.get(username).setBalance(amount);
+    }
+
     public void newConnections() {
 
     }
@@ -70,10 +81,20 @@ public class Server implements Runnable {
         return String.format("Server is running on: \'%s\', at port \'%d\'", hostname, port);
     }
 
-    @Override
     public void run() {
-        while (online) {
-            newConnections();
+        ServerSocket serverSocket;
+        try{
+            serverSocket = new ServerSocket(this.port);
+            while (online) {
+                Socket cSocket = serverSocket.accept();
+                System.out.println("[NEW CLIENT CONNECTED]: " + cSocket);
+                ServerThread newThread = new ServerThread(cSocket, this);
+                this.numOfClient++;
+                new Thread(newThread).start();
+            }
+        } catch (IOException e) {
+            System.out.println("[CANNOT CREATE SOCKET]: " + e.getMessage());
         }
+
     }
 }
