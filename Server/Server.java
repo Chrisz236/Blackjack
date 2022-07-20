@@ -6,7 +6,7 @@ import java.util.*;
 public class Server {
     private String hostname;
     private int port;
-    private boolean online = false;
+    private boolean online;
     private int numOfClient;
     Map<String, Account> clientInfo = new HashMap<>();
     // LobbyManager lobbyManager = new LobbyManager();
@@ -17,36 +17,17 @@ public class Server {
         this.online = true;
         this.numOfClient = 0;
         loadUserData();
-        System.out.println(this.toString());
     }
 
     /*
-     * function to validate user entered information
-     * @param Message msg
-     * @return Boolean true  for valid
-     *                 false for invalid
-     */
-    public boolean validateLogin(Message msg) {
-        if (msg.getType().equals("login")) {
-            String info = msg.getData();
-            String[] line = info.split(",");
-            String username = line[0];
-            if (clientInfo.get(username).getPassword(username).equals(line[1])) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    /*
-        load userFile.txt to Map clientInfo
-        associate Key: String username, Value: Account account
-        initialize clientInfo
+     *  load userFile.txt to Map clientInfo
+     *  associate Key: String username, Value: Account account
+     *  initialize clientInfo
+     *  localData[0] = USERNAME
+     *  localData[1] = PASSWORD
+     *  localData[2] = BALANCE
      */
     public void loadUserData() {
-        // localData[0] = USERNAME
-        // localData[1] = PASSWORD
-        // localData[2] = BALANCE
         try {
             String fileName = "Server/userFile.txt";
             File file = new File(fileName);
@@ -72,29 +53,28 @@ public class Server {
     public void setPlayerBalance(String username, int amount) {
         clientInfo.get(username).setBalance(amount);
     }
-
-    public void newConnections() {
-
+    public Map<String, Account> getClientInfo() {
+        return clientInfo;
     }
 
     public String toString() {
-        return String.format("Server is running on: \'%s\', at port \'%d\'", hostname, port);
+        return String.format("[Server is running on: \'%s\', at port \'%d\']", hostname, port);
     }
 
     public void run() {
         ServerSocket serverSocket;
+        System.out.println(this.toString());
+        System.out.println("[WAITING FOR CONNECTION...]");
         try{
             serverSocket = new ServerSocket(this.port);
             while (online) {
                 Socket cSocket = serverSocket.accept();
-                System.out.println("[NEW CLIENT CONNECTED]: " + cSocket);
                 ServerThread newThread = new ServerThread(cSocket, this);
-                this.numOfClient++;
                 new Thread(newThread).start();
+                this.numOfClient++;
             }
         } catch (IOException e) {
-            System.out.println("[CANNOT CREATE SOCKET]: " + e.getMessage());
+            System.out.println(e.getMessage());
         }
-
     }
 }
