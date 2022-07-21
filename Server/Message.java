@@ -70,6 +70,7 @@ public class Message implements Serializable {
 enum Type {
     Undefine,
     Login,
+    Logout,
     AddLobby,
-    DeleteLobby
+    DeleteLobby,
 }
