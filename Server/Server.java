@@ -9,7 +9,7 @@ public class Server {
     private boolean online;
     private int numOfClient;
     Map<String, Account> clientInfo = new HashMap<>();
-    // LobbyManager lobbyManager = new LobbyManager();
+    LobbyManager lobbyManager = new LobbyManager();
 
     public Server(String host, int port) {
         this.hostname = host;
@@ -46,13 +46,6 @@ public class Server {
         }
     }
 
-    public int getPlayerBalance(String username) {
-        return clientInfo.get(username).getBalance(username);
-    }
-
-    public void setPlayerBalance(String username, int amount) {
-        clientInfo.get(username).setBalance(amount);
-    }
     public Map<String, Account> getClientInfo() {
         return clientInfo;
     }
