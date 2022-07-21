@@ -7,7 +7,7 @@
   Description:
           Basic information for each client
  */
-public class Account {
+public class Player {
     private String username;
     private String password;
     private int balance;
@@ -15,7 +15,7 @@ public class Account {
     /*
      * constructor for Account class, initialize all variables
      */
-    public Account(String username, String password, int balance) {
+    public Player(String username, String password, int balance) {
         this.username = username;
         this.password = password;
         this.balance = balance;
