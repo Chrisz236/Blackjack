@@ -41,13 +41,11 @@ public class ServerThread implements Runnable {
      *                 false for invalid
      */
     public boolean validateLogin(Message msg) {
-        if (msg.getType().equals("login")) {
+        if (msg.getType().equals(Type.Login)) {
             String info = msg.getData();
             String[] line = info.split(",");
             String username = line[0];
-            if (server.getClientInfo().get(username).getPassword(username).equals(line[1])) {
-                return true;
-            }
+            return server.getClientInfo().get(username).getPassword(username).equals(line[1]);
         }
         return false;
     }
@@ -57,16 +55,35 @@ public class ServerThread implements Runnable {
         try {
             System.out.println("[NEW CLIENT CONNECTED]: " + cSocket);
 
-            Message msg = (Message) objectInputStream.readObject();
+            while (socketIsOpen) {
+                Message msg = (Message) objectInputStream.readObject();
+                switch (msg.getType()) {
+                    case Login :
+                        if (validateLogin(msg)) {
+                            System.out.println("login verified!");
+                        } else {
+                            System.out.println("login failed!");
+                        }
+                        break;
 
-            if (validateLogin(msg)) {
-                System.out.println("login verified!");
-            } else {
-                System.out.println("login failed!");
+                    case AddLobby:
+                        System.out.println("Type is Add Lobby");
+                        break;
+
+                    case DeleteLobby:
+                        System.out.println("Type is Delete Lobby");
+                        break;
+
+                    default:
+                        System.out.println("[Unknown command]");
+                        break;
+                }
             }
-
         } catch (IOException | ClassNotFoundException e) {
             System.out.println(e.getMessage());
         }
     }
+
+
+
 }
