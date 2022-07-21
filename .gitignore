@@ -28,3 +28,4 @@ hs_err_pid*
 # Intellj IDE
 .idea
 *.iml
+/bin/
