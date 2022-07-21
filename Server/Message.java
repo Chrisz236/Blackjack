@@ -13,7 +13,7 @@ import java.io.Serializable;
 
 public class Message implements Serializable {
     private String data;
-    private String type;
+    private Type type;
 
     /*
      * default constructor for Message
@@ -22,14 +22,14 @@ public class Message implements Serializable {
      */
     public Message() {
         this.data = "[UNDEFINED]";
-        this.type = "[UNDEFINED]";
+        this.type = Type.Undefine;
     }
 
     /*
      * constructor for Message with parameter
      * @param msg
      */
-    public Message(String msg, String type) {
+    public Message(String msg, Type type) {
         this.data = msg;
         this.type = type;
     }
@@ -54,7 +54,7 @@ public class Message implements Serializable {
      * member function to get type from Message object
      * @return String
      */
-    public String getType() {
+    public Type getType() {
         return this.type;
     }
 
@@ -62,7 +62,14 @@ public class Message implements Serializable {
      * member function to set type of the Message object
      * @param msg
      */
-    public void setType(String type) {
+    public void setType(Type type) {
         this.type = type;
     }
+}
+
+enum Type {
+    Undefine,
+    Login,
+    AddLobby,
+    DeleteLobby
 }
