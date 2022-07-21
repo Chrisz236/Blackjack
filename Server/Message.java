@@ -72,6 +72,9 @@ enum Type {
     Login,
     Logout,
     GetPlayerInfo,
+    ShowPlayerInfo,
+    GetLobbyInfo,
+    ShowLobbyInfo,
     AddLobby,
     DeleteLobby,
 }
