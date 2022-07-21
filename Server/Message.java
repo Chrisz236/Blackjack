@@ -2,7 +2,7 @@
   Author: Haolin Zhang
   File:   Message.java
   Date:   July 11, 2022
-  Ver:    1.0
+  Ver:    2.0
 
   Description:
           Message class for sending messages through the network
