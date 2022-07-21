@@ -9,27 +9,25 @@
 
 import java.io.*;
 import java.net.*;
-import java.util.*;
 
 public class ServerThread implements Runnable {
     private Boolean socketIsOpen = true;
-    private Socket cSocket;
+    private final Socket cSocket;
     private static Server server;
-    private OutputStream outputStream;
-    private ObjectOutputStream objectOutputStream;
-    private InputStream inputStream;
-    private ObjectInputStream objectInputStream;
+    private ObjectOutputStream oos;
+    private ObjectInputStream ois;
+    private String username;
 
     public ServerThread(Socket socket, Server server) {
         this.cSocket = socket;
         ServerThread.server = server;
         try {
-            this.outputStream = socket.getOutputStream();
-            this.objectOutputStream = new ObjectOutputStream(outputStream);
-            this.inputStream = socket.getInputStream();
-            this.objectInputStream = new ObjectInputStream(inputStream);
+            OutputStream outputStream = socket.getOutputStream();
+            this.oos = new ObjectOutputStream(outputStream);
+            InputStream inputStream = socket.getInputStream();
+            this.ois = new ObjectInputStream(inputStream);
         } catch (IOException e) {
-            socketIsOpen = false;
+            // socketIsOpen = false;
             System.out.println(e.getMessage());
         }
     }
@@ -41,29 +39,52 @@ public class ServerThread implements Runnable {
      *                 false for invalid
      */
     public boolean validateLogin(Message msg) {
-        if (msg.getType().equals(Type.Login)) {
-            String info = msg.getData();
-            String[] line = info.split(",");
-            String username = line[0];
-            return server.getClientInfo().get(username).getPassword(username).equals(line[1]);
+        String info = msg.getData();
+        String[] line = info.split(",");
+        this.username = line[0];
+        if (server.clientInfo.containsKey(username)) {
+            return server.clientInfo.get(username).getPassword(username).equals(line[1]);
         }
         return false;
+    }
+
+    public Message getUserInfo() {
+        String info = String.format("Username: %s, Balance: %s", username,
+                server.clientInfo.get(username).getBalance(username));
+        return new Message(info, Type.ShowPlayerInfo);
+    }
+
+    public Message getLobbyInfo() {
+        String info = String.format("Number of lobbies: %d, Online: %d", server.lobbyManager.numOfLobbies, server.onlineNumber);
+        return new Message(info, Type.ShowLobbyInfo);
     }
 
     @Override
     public void run() {
         try {
             System.out.println("[NEW CLIENT CONNECTED]: " + cSocket);
-
             while (socketIsOpen) {
-                Message msg = (Message) objectInputStream.readObject();
+                Message msg = (Message) ois.readObject();
                 switch (msg.getType()) {
-                    case Login :
+                    case Login:
                         if (validateLogin(msg)) {
-                            System.out.println("login verified!");
+                            System.out.println("[New Player Connected!]\n");
+                            server.onlineNumber++;
                         } else {
-                            System.out.println("login failed!");
+                            System.out.println("[Login Failed!]");
                         }
+                        break;
+
+                    case GetPlayerInfo:
+                        System.out.println("[Requesting PlayerInfo]");
+                        oos.writeObject(getUserInfo());
+                        System.out.println("[UserInfo sent]\n");
+                        break;
+
+                    case GetLobbyInfo:
+                        System.out.println("[Requesting LobbyInfo]");
+                        oos.writeObject(getLobbyInfo());
+                        System.out.println("[LobbyInfo sent]\n");
                         break;
 
                     case AddLobby:
@@ -72,6 +93,12 @@ public class ServerThread implements Runnable {
 
                     case DeleteLobby:
                         System.out.println("Type is Delete Lobby");
+                        break;
+
+                    case Logout:
+                        System.out.println("Type is Logout");
+                        server.onlineNumber--;
+                        socketIsOpen = false;
                         break;
 
                     default:
@@ -83,7 +110,6 @@ public class ServerThread implements Runnable {
             System.out.println(e.getMessage());
         }
     }
-
 
 
 }
