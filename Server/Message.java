@@ -71,6 +71,7 @@ enum Type {
     Undefine,
     Login,
     Logout,
+    GetPlayerInfo,
     AddLobby,
     DeleteLobby,
 }
