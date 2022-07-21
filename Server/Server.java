@@ -1,21 +1,21 @@
 import java.io.*;
 import java.net.*;
-import java.nio.channels.ServerSocketChannel;
 import java.util.*;
 
 public class Server {
     private String hostname;
     private int port;
     private boolean online;
-    private int numOfClient;
-    Map<String, Account> clientInfo = new HashMap<>();
-    LobbyManager lobbyManager = new LobbyManager();
+    public int onlineNumber;
+    public Map<String, Player> clientInfo = new HashMap<>();
+    public LobbyManager lobbyManager;
 
     public Server(String host, int port) {
         this.hostname = host;
         this.port = port;
         this.online = true;
-        this.numOfClient = 0;
+        this.onlineNumber = 0;
+        lobbyManager = new LobbyManager();
         loadUserData();
     }
 
@@ -36,7 +36,7 @@ public class Server {
             String textLine;
             while ((textLine = br.readLine()) != null) {
                 String[] localData = textLine.split(",");
-                Account tmpAcc = new Account(localData[0], localData[1],
+                Player tmpAcc = new Player(localData[0], localData[1],
                         Integer.parseInt(localData[2].trim()));
                 clientInfo.put(localData[0], tmpAcc);
             }
@@ -46,8 +46,8 @@ public class Server {
         }
     }
 
-    public Map<String, Account> getClientInfo() {
-        return clientInfo;
+    public int getOnlineNumber() {
+        return onlineNumber;
     }
 
     public String toString() {
@@ -64,7 +64,6 @@ public class Server {
                 Socket cSocket = serverSocket.accept();
                 ServerThread newThread = new ServerThread(cSocket, this);
                 new Thread(newThread).start();
-                this.numOfClient++;
             }
         } catch (IOException e) {
             System.out.println(e.getMessage());
