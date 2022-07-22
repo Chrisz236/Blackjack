@@ -39,8 +39,8 @@ public class ServerThread implements Runnable {
      *                 false for invalid
      */
     public boolean validateLogin(Message msg) {
-        String info = msg.getData();
-        String[] line = info.split(",");
+        String data = msg.getData();
+        String[] line = data.split(",");
         this.username = line[0];
         if (server.clientInfo.containsKey(username)) {
             return server.clientInfo.get(username).getPassword(username).equals(line[1]);
@@ -49,14 +49,31 @@ public class ServerThread implements Runnable {
     }
 
     public Message getUserInfo() {
-        String info = String.format("Username: %s, Balance: %s", username,
+        String info = String.format("Username: %s\nBalance: %s", username,
                 server.clientInfo.get(username).getBalance(username));
         return new Message(info, Type.ShowPlayerInfo);
     }
 
     public Message getLobbyInfo() {
-        String info = String.format("Number of lobbies: %d, Online: %d", server.lobbyManager.numOfLobbies, server.onlineNumber);
+        String info = String.format("Number of lobbies: %s\nOnline: %d\n", server.lobbyManager.numOfLobbies, server.onlineNumber);
+        if(server.lobbyManager.numOfLobbies > 0) {
+            info += server.lobbyManager.displayLobbies();
+        }
         return new Message(info, Type.ShowLobbyInfo);
+    }
+
+    public void createLobby(Message msg) {
+        String data = msg.getData();
+        String[] line = data.split(",");
+        String lobbyName = line[0];
+        server.lobbyManager.createLobby(lobbyName);
+    }
+
+    public boolean deleteLobby(Message msg) {
+        String data = msg.getData();
+        String[] line = data.split(",");
+        String lobbyName = line[0];
+        return server.lobbyManager.deleteLobby(lobbyName);
     }
 
     @Override
@@ -68,37 +85,45 @@ public class ServerThread implements Runnable {
                 switch (msg.getType()) {
                     case Login:
                         if (validateLogin(msg)) {
-                            System.out.println("[New Player Connected!]\n");
+                            System.out.println("[New Player Connected]\n");
                             server.onlineNumber++;
                         } else {
-                            System.out.println("[Login Failed!]");
+                            System.out.println("[Login Failed]");
                         }
                         break;
 
                     case GetPlayerInfo:
-                        System.out.println("[Requesting PlayerInfo]");
+                        System.out.println("[Requesting PlayerInfo...]");
                         oos.writeObject(getUserInfo());
-                        System.out.println("[UserInfo sent]\n");
+                        System.out.println("[UserInfo Sent]\n");
                         break;
 
                     case GetLobbyInfo:
-                        System.out.println("[Requesting LobbyInfo]");
+                        System.out.println("[Requesting LobbyInfo...]");
                         oos.writeObject(getLobbyInfo());
-                        System.out.println("[LobbyInfo sent]\n");
+                        System.out.println("[LobbyInfo Sent]\n");
                         break;
 
                     case AddLobby:
-                        System.out.println("Type is Add Lobby");
+                        System.out.println("[Creating a New Lobby...]");
+                        createLobby(msg);
+                        System.out.println("[New Lobby Created]\n");
                         break;
 
                     case DeleteLobby:
-                        System.out.println("Type is Delete Lobby");
+                        System.out.println("[Deleting Lobby...]");
+                        if(deleteLobby(msg)) {
+                            System.out.println("[Delete Succeed]\n");
+                        } else {
+                            System.out.println("[Delete Failed]\n");
+                        }
                         break;
 
                     case Logout:
-                        System.out.println("Type is Logout");
+                        System.out.println("[Disconnecting...]");
                         server.onlineNumber--;
                         socketIsOpen = false;
+                        System.out.println("[Disconnected]");
                         break;
 
                     default:
