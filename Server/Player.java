@@ -2,13 +2,13 @@
   Author: Haolin Zhang
   File:   Account.java
   Date:   July 19, 2022
-  Ver:    1.0
+  Ver:    1.1
 
   Description:
           Basic information for each client
  */
 public class Player {
-    private String username;
+    public String username;
     private String password;
     private int balance;
 
@@ -41,7 +41,7 @@ public class Player {
      * setter function for balance
      * @param int newBalance
      */
-    public void setBalance(int newBalance) {
-        this.balance = newBalance;
+    public void addBalance(int amount) {
+        this.balance = this.balance + amount;
     }
 }
