@@ -94,12 +94,6 @@ public class Player {
 
 
 
-	public void setHand(String[] hand) {
-		this.hand = hand;
-	}
-
-
-
 	public double getBet() {
 		return bet;
 	}
