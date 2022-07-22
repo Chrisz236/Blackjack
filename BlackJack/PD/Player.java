@@ -100,20 +100,20 @@ public class Player {
 
 
 
-	public void setBet(double bet) {
+	public void BetAmount(double bet) {
 		this.bet = bet;
 		setBalance(balance-bet);
 	}
 
 
 
-	public boolean isHitOrpass() {
+	public boolean getHitOrpass() {
 		return hitOrpass;
 	}
 
 
 
-	public void setHitOrpass(boolean hitOrpass) {
+	public void Stay(boolean hitOrpass) {
 		this.hitOrpass = hitOrpass;
 	}
 	
