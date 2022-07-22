@@ -35,6 +35,15 @@ public class Message implements Serializable {
     }
 
     /*
+     * constructor for Message with parameter
+     * @param msg
+     */
+    public Message(Type type) {
+        this.data = "[UNDEFINED]";
+        this.type = type;
+    }
+
+    /*
      * member function to get data from Message object
      * @return String
      */
