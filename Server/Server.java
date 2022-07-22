@@ -3,9 +3,9 @@ import java.net.*;
 import java.util.*;
 
 public class Server {
-    private String hostname;
-    private int port;
-    private boolean online;
+    private final String hostname;
+    private final int port;
+    private final boolean online;
     public int onlineNumber;
     public Map<String, Player> clientInfo = new HashMap<>();
     public LobbyManager lobbyManager;
@@ -44,10 +44,6 @@ public class Server {
         } catch (IOException e) {
             System.out.println(e.getMessage());
         }
-    }
-
-    public int getOnlineNumber() {
-        return onlineNumber;
     }
 
     public String toString() {
