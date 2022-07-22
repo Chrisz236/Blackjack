@@ -13,9 +13,9 @@ class ClientDriver {
 		
 		String ip = input.nextLine();
 		ip = ip.trim();
-		// inputs its own IP address when creating client to connect multiple clients
+		// get client's own IP address when creating it to connect multiple other clients
 		Client client = new Client(ip);
-		client.run();
+		//client.run();
 		input.close();
 	}
 }
