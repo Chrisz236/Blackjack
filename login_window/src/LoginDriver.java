@@ -1,3 +1,7 @@
+/*
+ * Author: Diego Ureno
+ */
+
 import java.util.*;
 
 public class LoginDriver {

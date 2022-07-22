@@ -3,7 +3,7 @@
  * File: 		LoginWindow.java
  * 
  * File Description: GUI functionality for the login
- * window of the Blackjack Project
+ * window.
  */
 
 import javax.swing.*;
