@@ -2,30 +2,43 @@ import java.util.*;
 
 public class LobbyManager {
     private ArrayList<Lobby> lobbies;
-    private Map<String, Integer> lobbyIndex;
     public int numOfLobbies;
 
     public LobbyManager() {
         lobbies = new ArrayList<>();
-        lobbyIndex = new HashMap<>();
         numOfLobbies = 0;
     }
 
     public String displayLobbies() {
-        String lobbiesName = "";
+        StringBuilder lobbiesName = new StringBuilder();
         if(lobbies.size() > 0) {
-            for(int i = 0; i < lobbies.size(); i++) {
-                lobbiesName += lobbies.get(i).getLobbyName() + "\n";
+            for (Lobby lobby : lobbies) {
+                lobbiesName.append(lobby.getLobbyName()).append("\n");
             }
         } else {
             return "[NO LOBBY]";
         }
-        return lobbiesName;
+        return lobbiesName.toString();
     }
 
     public LobbyStatus getLobbyStatus(String lobbyName) {
-        return lobbies.get(lobbyIndex.get(lobbyName)).getLobbyStatus();
+        for (Lobby lobby : lobbies) {
+            if(lobby.getLobbyName().equals(lobbyName)) {
+                return lobby.getLobbyStatus();
+            }
+        }
+        return null;
     }
+
+    public String viewLobby(String lobbyName) {
+        for (Lobby lobby : lobbies) {
+            if(lobby.getLobbyName().equals(lobbyName)) {
+                return lobby.displayClientNames();
+            }
+        }
+        return "[LOBBY NOT FOUND]";
+    }
+
     public void createLobby(String lobbyName) {
         Lobby lobby = new Lobby(lobbyName);
         lobbies.add(lobby);
@@ -45,7 +58,10 @@ public class LobbyManager {
         return false;
     }
 
-    public void addPlayerToLobby(Player player, String lobbyName) {
-
+    public void addPlayerToLobby(String lobbyName, Player player) {
+        for (Lobby lobby : lobbies) {
+            if (lobby.getLobbyName().equals(lobbyName))
+                lobby.connectClient(player);
+        }
     }
 }
