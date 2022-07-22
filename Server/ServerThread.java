@@ -42,38 +42,66 @@ public class ServerThread implements Runnable {
         String data = msg.getData();
         String[] line = data.split(",");
         this.username = line[0];
-        if (server.clientInfo.containsKey(username)) {
-            return server.clientInfo.get(username).getPassword(username).equals(line[1]);
+        if (server.playerInfo.containsKey(username)) {
+            return server.playerInfo.get(username).getPassword(username).equals(line[1]);
         }
         return false;
     }
 
+    /*
+     * return the username and balance in data part of the Message
+     */
     public Message getUserInfo() {
         String info = String.format("Username: %s\nBalance: %s", username,
-                server.clientInfo.get(username).getBalance(username));
+                server.playerInfo.get(username).getBalance(username));
         return new Message(info, Type.ShowPlayerInfo);
     }
 
-    public Message getLobbyInfo() {
+    /*
+     * return the number of lobbies and how many people online, also current lobbies (all in data part)
+     */
+    public Message getLobbyManagerInfo() {
         String info = String.format("Number of lobbies: %s\nOnline: %d\n", server.lobbyManager.numOfLobbies, server.onlineNumber);
-        if(server.lobbyManager.numOfLobbies > 0) {
+        if (server.lobbyManager.numOfLobbies > 0) {
             info += server.lobbyManager.displayLobbies();
         }
-        return new Message(info, Type.ShowLobbyInfo);
+        return new Message(info, Type.ShowLobbyManagerInfo);
     }
 
+    public void reloadBalance(Message msg) {
+        int amount = Integer.parseInt(msg.getData());
+        if (amount >= 0) {
+            server.playerInfo.get(username).addBalance(amount);
+        }
+    }
+
+    public Message viewLobby(Message msg) {
+        String lobbyName = msg.getData();
+        return new Message(server.lobbyManager.viewLobby(lobbyName), Type.ShowLobby);
+    }
+
+    /*
+     * create a new lobby with given name
+     */
     public void createLobby(Message msg) {
-        String data = msg.getData();
-        String[] line = data.split(",");
-        String lobbyName = line[0];
+        String lobbyName = msg.getData();
         server.lobbyManager.createLobby(lobbyName);
     }
 
+    /*
+     * delete lobby with specific name, return false is lobby not found
+     */
     public boolean deleteLobby(Message msg) {
-        String data = msg.getData();
-        String[] line = data.split(",");
-        String lobbyName = line[0];
+        String lobbyName = msg.getData();
         return server.lobbyManager.deleteLobby(lobbyName);
+    }
+
+    /*
+     * connect current player to given lobby name
+     */
+    public void joinLobby(Message msg) {
+        String lobbyName = msg.getData();
+        server.lobbyManager.addPlayerToLobby(lobbyName, server.playerInfo.get(username));
     }
 
     @Override
@@ -88,7 +116,7 @@ public class ServerThread implements Runnable {
                             System.out.println("[New Player Connected]\n");
                             server.onlineNumber++;
                         } else {
-                            System.out.println("[Login Failed]");
+                            System.out.println("[Login Failed]\n");
                         }
                         break;
 
@@ -98,21 +126,43 @@ public class ServerThread implements Runnable {
                         System.out.println("[UserInfo Sent]\n");
                         break;
 
-                    case GetLobbyInfo:
+                    case GetLobbyManagerInfo:
                         System.out.println("[Requesting LobbyInfo...]");
-                        oos.writeObject(getLobbyInfo());
+                        oos.writeObject(getLobbyManagerInfo());
                         System.out.println("[LobbyInfo Sent]\n");
                         break;
 
-                    case AddLobby:
+                    case ReloadBalance:
+                        System.out.println("[Reloading...]");
+                        reloadBalance(msg);
+                        System.out.println("[Balance Updated]\n");
+                        break;
+
+                    case ViewLobby:
+                        System.out.println("[Viewing Lobby...]");
+                        oos.writeObject(viewLobby(msg));
+                        System.out.println("[LobbyInfo Sent]\n");
+                        break;
+
+                    case CreateLobby:
                         System.out.println("[Creating a New Lobby...]");
                         createLobby(msg);
                         System.out.println("[New Lobby Created]\n");
                         break;
 
+                    case JoinLobby:
+                        System.out.println("[Joining Lobby...]");
+                        joinLobby(msg);
+                        System.out.println("[Lobby Joint]\n");
+                        break;
+
+                    case ExitLobby:
+                        System.out.println("[Exiting Lobby...]");
+                        break;
+
                     case DeleteLobby:
                         System.out.println("[Deleting Lobby...]");
-                        if(deleteLobby(msg)) {
+                        if (deleteLobby(msg)) {
                             System.out.println("[Delete Succeed]\n");
                         } else {
                             System.out.println("[Delete Failed]\n");
@@ -135,6 +185,4 @@ public class ServerThread implements Runnable {
             System.out.println(e.getMessage());
         }
     }
-
-
 }
