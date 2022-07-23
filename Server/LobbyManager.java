@@ -64,4 +64,35 @@ public class LobbyManager {
                 lobby.connectClient(player);
         }
     }
+
+    public void removePlayerFromLobby(Player player) {
+        for (Lobby lobby : lobbies) {
+            if(lobby.playerExist(player)) {
+                lobby.disconnectClient(player);
+            }
+        }
+    }
+
+    public boolean setPlayerAsDealer(Player player) {
+        for (Lobby lobby : lobbies) {
+            if(lobby.playerExist(player)) {
+                return lobby.setDealer(player);
+            }
+        }
+        return false;
+    }
+
+    public int lobbyIndex(Player player) {
+        for(int i = 0; i < lobbies.size(); i++) {
+            Lobby lobby = lobbies.get(i);
+            if(lobby.playerExist(player)) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
+    public void startGame(Player player) {
+        lobbies.get(lobbyIndex(player)).startGame();
+    }
 }
