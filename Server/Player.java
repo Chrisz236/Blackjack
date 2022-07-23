@@ -56,12 +56,4 @@ public class Player {
     public void setBalance(int amount) {
         this.balance = amount;
     }
-
-    public Deck getDeck() {
-        return deck;
-    }
-
-    public void setDeck(Deck deck) {
-        this.deck = deck;
-    }
 }
