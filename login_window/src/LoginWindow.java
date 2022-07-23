@@ -6,55 +6,60 @@
  * window.
  */
 
-//To allow GUI
 import javax.swing.*;
 import java.io.*;
 import java.net.*;
 import java.util.*;
 
-public class LoginWindow implements Client {
+public class LoginWindow implements LoginInterface {
 	
 	//To determine successful login
 	private boolean login;
 	
-	//Client object
-	private Client user;
+	//Create a test user to test GUI
+	private TestUser user;
 	
-//	//Socket Connections(?)
-//	ObjectOutputStream objectOutput = new ObjectOutputStream();
-//	ObjectInputSream objectInput = new ObjectInputStream();
+	//Client object
+	//private Client user;
+	
+	//Socket Connections
+	private ObjectOutputStream out;
+	private ObjectInputStream in;
 	
 	//LoginWindow Constructor
-	public LoginWindow(Client c) {
-		
-		user = c;
+	public LoginWindow(TestUser newUser) {
+		user = newUser;
 	}
+	
+	//LoginWindow using Client and Server
+//	public LoginWindow(ObjectInputStream input, ObjectOutputStream output) {
+//		out = output;
+//		in = input;
+//		processCommands();
+//	}
 	
 	public void processCommands() {
 		
-		JTextField fieldOne = new JTextField(5);
-		JTextField fieldTwo = new JTextField(5);
+		//Create two text boxes
+		JTextField fieldOne = new JTextField(15);
+		JTextField fieldTwo = new JTextField(15);
 		
+		//Create a GUI Window
 		JPanel loginPanel = new JPanel();
-		loginPanel.add(new JLabel("Username:"));
+		loginPanel.add(new JLabel("Username:"));			//Username textbox
 		loginPanel.add(fieldOne);
-		loginPanel.add(Box.createHorizontalStrut(15));
-		loginPanel.add(new JLabel("Password:"));
+		loginPanel.add(Box.createHorizontalStrut(10));		//Space between textboxes
+		loginPanel.add(new JLabel("Password:"));			//Password textbox
 		loginPanel.add(fieldTwo);
 		
+		//Prompt user input
 		int inputs = JOptionPane.showConfirmDialog(null, loginPanel,
 				"Enter User Credentials", JOptionPane.OK_CANCEL_OPTION);
+		
+		//Print to console (test)
 		if (inputs == JOptionPane.OK_OPTION) {
 			System.out.println("Username: " + fieldOne.getText());
 			System.out.println("Password: " + fieldTwo.getText());
 		}
-		
-		
-		
-//		String[] inputs = {"Username", "Password"};
-		
-//		do {
-//			JOptionPane.showInputDialog(null, "Username")
-//		}
 	}
 }
