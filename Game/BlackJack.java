@@ -14,6 +14,52 @@ public class BlackJack {
 	private Player dealer;
 	private Deck deck;
 
+	/*
+	 * default constructor for BlackJack game
+	 * initialize all variables
+	 */
+	public BlackJack(Player dealer, ArrayList<Player> players) {
+		this.dealer = dealer;
+		this.players = players;
+	}
+
+	/*
+	 * add bet amount to player
+	 */
+	public void bet(Player player, int amount) {
+
+	}
+
+	/*
+	 * draw a card from main deck
+	 */
+	public void hit(Player player) {
+
+	}
+
+	/*
+	 * do nothing, mark as skip
+	 */
+	public void stay(Player player) {
+
+	}
+
+	/*
+	 * add a new player to ArrayList<Player> players
+	 */
+	public void addPlayer(Player player) {
+
+	}
+
+	/*
+	 * String contains who is in the game and their cards
+	 * looks like this:
+	 * "DEALER, ANDREW BUSTOS, CLUB TWO, DIAMOND SIX\n PLAYER, HAOLIN ZHANG, SPADE FIVE, SPADE THREE\n PLAYER, STEVEN TRAN, HEART FIVE, DIAMOND SIX..."
+	 */
+	public String getInfo() {
+
+	}
+
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
 
@@ -123,29 +169,5 @@ public class BlackJack {
 		}
 		
 		System.out.println("Out of money!");
-	}
-
-	public void addPlayer(Player player) {
-		this.players.add(player);
-	}
-
-	public void drawCard(Player player) {
-
-	}
-
-	public void hit(Player player) {
-
-	}
-
-	public void stay() {
-
-	}
-
-	public void bet(int amount, Player player) {
-
-	}
-
-	public Deck showAllHands(Player player) {
-		return player.getDeck();
 	}
 }
