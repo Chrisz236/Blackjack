@@ -78,6 +78,8 @@ public class Message implements Serializable {
 
 enum Type {
     Undefine,
+    Succeed,
+    Failed,
     Login,
     Logout,
     GetPlayerInfo,
@@ -90,5 +92,15 @@ enum Type {
     CreateLobby,
     DeleteLobby,
     JoinLobby,
-    ExitLobby
+    ExitLobby,
+    BeDealer,
+    StartGame,
+    ViewDeck,
+    AddBet,
+    ShowBet,
+    Hit,
+    ShowHit,
+    Stay,
+    ShowAllHands,
+    Exit
 }
