@@ -62,7 +62,7 @@ public class ServerThread implements Runnable {
      * return the number of lobbies and how many people online, also current lobbies (all in data part)
      */
     public Message getLobbyManagerInfo() {
-        String info = String.format("Number of lobbies: %s\nOnline: %d\n", server.lobbyManager.numOfLobbies, server.onlineNumber);
+        String info = String.format("Number of lobbies: %s\nOnline: %d\n", server.lobbyManager.numOfLobbies, server.numOfClientsOnline);
         if (server.lobbyManager.numOfLobbies > 0) {
             info += server.lobbyManager.displayLobbies();
         }
@@ -150,7 +150,7 @@ public class ServerThread implements Runnable {
                     case Login:
                         if (validateLogin(msg)) {
                             System.out.println("[New Player Connected]\n");
-                            server.onlineNumber++;
+                            server.numOfClientsOnline++;
                         } else {
                             System.out.println("[Login Failed]\n");
                         }
@@ -219,7 +219,7 @@ public class ServerThread implements Runnable {
 
                     case Logout:
                         System.out.println("[Disconnecting...]");
-                        server.onlineNumber--;
+                        server.numOfClientsOnline--;
                         socketIsOpen = false;
                         System.out.println("[Disconnected]");
                         break;

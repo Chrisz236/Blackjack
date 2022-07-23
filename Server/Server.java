@@ -16,7 +16,7 @@ public class Server {
     private final String hostname;
     private final int port;
     private final boolean online;
-    public int onlineNumber;
+    public int numOfClientsOnline;
     public Map<String, Player> playerInfo = new HashMap<>();
     public LobbyManager lobbyManager;
 
@@ -27,7 +27,7 @@ public class Server {
         this.hostname = host;
         this.port = port;
         this.online = true;
-        this.onlineNumber = 0;
+        this.numOfClientsOnline = 0;
         lobbyManager = new LobbyManager();
         loadUserData();
     }
