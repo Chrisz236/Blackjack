@@ -57,6 +57,10 @@ public class BlackJack {
 	 * "DEALER, ANDREW BUSTOS, CLUB TWO, DIAMOND SIX\n PLAYER, HAOLIN ZHANG, SPADE FIVE, SPADE THREE\n PLAYER, STEVEN TRAN, HEART FIVE, DIAMOND SIX..."
 	 */
 	public String getInfo() {
+		return "";
+	}
+
+	public void start() {
 
 	}
 
