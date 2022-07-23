@@ -40,21 +40,30 @@ public class ServerThread implements Runnable {
      * @return Boolean true  for valid
      *                 false for invalid
      */
-    public boolean validateLogin(Message msg) {
+    public Message validateLogin(Message msg) {
         String data = msg.getData();
         String[] line = data.split(",");
         this.username = line[0];
         if (server.playerInfo.containsKey(username)) {
-            return server.playerInfo.get(username).getPassword(username).equals(line[1]);
+            if (server.playerInfo.get(username).getPassword(username).equals(line[1])) {
+                System.out.println("[Verify Succeed]");
+                server.numOfClientsOnline++;
+                if(server.playerInfo.get(username).isDealer) {
+                    return new Message("DEALER", Type.Succeed);
+                } else {
+                    return new Message("PLAYER", Type.Succeed);
+                }
+            }
         }
-        return false;
+        System.out.println("[Verify Failed]");
+        return new Message(Type.Failed);
     }
 
     /*
      * return the username and balance in data part of the Message
      */
     public Message getUserInfo() {
-        String info = String.format("Username: %s\nBalance: %s", username,
+        String info = String.format("%s, %s", username,
                 server.playerInfo.get(username).getBalance(username));
         return new Message(info, Type.ShowPlayerInfo);
     }
@@ -63,7 +72,7 @@ public class ServerThread implements Runnable {
      * return the number of lobbies and how many people online, also current lobbies (all in data part)
      */
     public Message getLobbyManagerInfo() {
-        String info = String.format("Number of lobbies: %s\nOnline: %d\n", server.lobbyManager.numOfLobbies, server.numOfClientsOnline);
+        String info = String.format("num of lobby: %s, num of clients online: %d, ", server.lobbyManager.numOfLobbies, server.numOfClientsOnline);
         if (server.lobbyManager.numOfLobbies > 0) {
             info += server.lobbyManager.displayLobbies();
         }
@@ -115,26 +124,8 @@ public class ServerThread implements Runnable {
         server.lobbyManager.removePlayerFromLobby(server.playerInfo.get(username));
     }
 
-    /*
-     * set current player as dealer, return false if there is already a one
-     */
-    public Message beDealer() {
-        if (server.lobbyManager.setPlayerAsDealer(server.playerInfo.get(username))) {
-            return new Message(Type.Succeed);
-        }
-        return new Message(Type.Failed);
-    }
-
-    public void addBet(Message msg) {
-        int amount = Integer.parseInt(msg.getData().trim());
-        server.lobbyManager.addBet(server.playerInfo.get(username), amount);
-    }
-
-    /*
-     * start game where current player is in
-     */
     public void startGame() {
-        server.lobbyManager.startGame(server.playerInfo.get(username));
+
     }
 
     @Override
@@ -149,12 +140,8 @@ public class ServerThread implements Runnable {
 
                 switch (msg.getType()) {
                     case Login:
-                        if (validateLogin(msg)) {
-                            System.out.println("[New Player Connected]\n");
-                            server.numOfClientsOnline++;
-                        } else {
-                            System.out.println("[Login Failed]\n");
-                        }
+                        System.out.println("[Verifying Login Info...]");
+                        oos.writeObject(validateLogin(msg));
                         break;
 
                     case GetPlayerInfo:
@@ -204,13 +191,8 @@ public class ServerThread implements Runnable {
                         if (deleteLobby(msg)) {
                             System.out.println("[Delete Succeed]\n");
                         } else {
-                            System.out.println("[Delete Failed]\n");
+                            System.out.println("[Delete Failed - Lobby Not Found]\n");
                         }
-                        break;
-
-                    case BeDealer:
-                        System.out.println("[Choosing Dealer...]");
-                        oos.writeObject(beDealer());
                         break;
 
                     case StartGame:
@@ -227,10 +209,7 @@ public class ServerThread implements Runnable {
 
                     case AddBet:
                         System.out.println("[Adding Bet...]");
-
-                    case ShowAllHands:
-                        System.out.println("[Show all hands...]");
-                        oos.writeObject(beDealer());
+                        break;
 
                     default:
                         System.out.println("[Unknown command]");
