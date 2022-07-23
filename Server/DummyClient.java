@@ -44,6 +44,15 @@ public class DummyClient {
                 Message msg3 = (Message) ois.readObject();
                 System.out.println("Who is in the lobby:\n" + msg3.getData());
 
+                oos.writeObject(new Message(Type.ExitLobby));
+                oos.writeObject(new Message("First lobby", Type.ViewLobby));
+                Message msg4 = (Message) ois.readObject();
+                System.out.println("Who is in the lobby:\n" + msg4.getData());
+
+                oos.writeObject(new Message(Type.GetLobbyManagerInfo));
+                Message msg5 = (Message) ois.readObject();
+                System.out.println("getLobbyManagerInfo() after createLobby:\n" + msg5.getData());
+
                 // Example of DeleteLobby
                 oos.writeObject(new Message("Second lobby", Type.DeleteLobby));
 
