@@ -17,6 +17,7 @@ public class ServerThread implements Runnable {
     private ObjectOutputStream oos;
     private ObjectInputStream ois;
     private String username;
+    private int lobbyIdx = -1;
 
     public ServerThread(Socket socket, Server server) {
         this.cSocket = socket;
@@ -77,7 +78,8 @@ public class ServerThread implements Runnable {
 
     public Message viewLobby(Message msg) {
         String lobbyName = msg.getData();
-        return new Message(server.lobbyManager.viewLobby(lobbyName), Type.ShowLobby);
+        return new Message(server.lobbyManager.viewLobby(lobbyName) + server.lobbyManager.getLobbyStatus(lobbyName),
+                Type.ShowLobby);
     }
 
     /*
@@ -102,6 +104,31 @@ public class ServerThread implements Runnable {
     public void joinLobby(Message msg) {
         String lobbyName = msg.getData();
         server.lobbyManager.addPlayerToLobby(lobbyName, server.playerInfo.get(username));
+        lobbyIdx = server.lobbyManager.lobbyIndex(server.playerInfo.get(username));
+    }
+
+    /*
+     * disconnect current player from lobby back to lobbyManager
+     */
+    public void exitLobby() {
+        server.lobbyManager.removePlayerFromLobby(server.playerInfo.get(username));
+    }
+
+    /*
+     * set current player as dealer, return false if there is already a one
+     */
+    public Message beDealer() {
+        if (server.lobbyManager.setPlayerAsDealer(server.playerInfo.get(username))) {
+            return new Message(Type.Succeed);
+        }
+        return new Message(Type.Failed);
+    }
+
+    /*
+     * start game where current player is in
+     */
+    public void startGame() {
+        server.lobbyManager.startGame(server.playerInfo.get(username));
     }
 
     @Override
@@ -109,7 +136,11 @@ public class ServerThread implements Runnable {
         try {
             System.out.println("[NEW CLIENT CONNECTED]: " + cSocket);
             while (socketIsOpen) {
-                Message msg = (Message) ois.readObject();
+                Message msg = new Message();
+                synchronized (msg) {
+                    msg = (Message) ois.readObject();
+                }
+
                 switch (msg.getType()) {
                     case Login:
                         if (validateLogin(msg)) {
@@ -158,6 +189,8 @@ public class ServerThread implements Runnable {
 
                     case ExitLobby:
                         System.out.println("[Exiting Lobby...]");
+                        exitLobby();
+                        System.out.println("[Lobby Exited]\n");
                         break;
 
                     case DeleteLobby:
@@ -169,12 +202,29 @@ public class ServerThread implements Runnable {
                         }
                         break;
 
+                    case BeDealer:
+                        System.out.println("[Choosing Dealer...]");
+                        oos.writeObject(beDealer());
+                        break;
+
+                    case StartGame:
+                        System.out.println("[Starting Game...]");
+                        startGame();
+                        System.out.println("[Game Started]");
+
                     case Logout:
                         System.out.println("[Disconnecting...]");
                         server.onlineNumber--;
                         socketIsOpen = false;
                         System.out.println("[Disconnected]");
                         break;
+
+                    case AddBet:
+                        System.out.println("[Adding Bet...]");
+
+                    case ShowAllHands:
+                        System.out.println("[Show all hands...]");
+                        oos.writeObject(beDealer());
 
                     default:
                         System.out.println("[Unknown command]");
