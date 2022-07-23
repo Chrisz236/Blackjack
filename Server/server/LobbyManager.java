@@ -14,7 +14,7 @@ public class LobbyManager {
         StringBuilder lobbiesName = new StringBuilder();
         if(lobbies.size() > 0) {
             for (Lobby lobby : lobbies) {
-                lobbiesName.append(lobby.getLobbyName()).append("\n");
+                lobbiesName.append(lobby.getLobbyName()).append(", ");
             }
         } else {
             return "[NO LOBBY]";
