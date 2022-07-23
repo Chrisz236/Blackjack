@@ -1,6 +1,6 @@
 /*
   Author: Haolin Zhang
-  File:   Account.java
+  File:   Player.java
   Date:   July 19, 2022
   Ver:    1.1
 
@@ -11,6 +11,14 @@ public class Player {
     public String username;
     private String password;
     private int balance;
+    private Deck deck;
+
+    public Player() {
+        this.username = "[Undefined]";
+        this.password = "[Undefined]";
+        this.balance = -1;
+        this.deck = new Deck();
+    }
 
     /*
      * constructor for Account class, initialize all variables
@@ -43,5 +51,17 @@ public class Player {
      */
     public void addBalance(int amount) {
         this.balance = this.balance + amount;
+    }
+
+    public void setBalance(int amount) {
+        this.balance = amount;
+    }
+
+    public Deck getDeck() {
+        return deck;
+    }
+
+    public void setDeck(Deck deck) {
+        this.deck = deck;
     }
 }
