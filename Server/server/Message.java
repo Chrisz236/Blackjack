@@ -14,7 +14,7 @@ import java.io.Serializable;
 
 public class Message implements Serializable {
     private String data;
-    private Type type;
+    public Type type;
 
     /*
      * default constructor for Message
