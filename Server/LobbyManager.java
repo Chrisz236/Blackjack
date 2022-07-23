@@ -78,6 +78,9 @@ public class LobbyManager {
         return false;
     }
 
+    /*
+     * get which the index of the lobby where player in
+     */
     public int lobbyIndex(Player player) {
         for(int i = 0; i < lobbies.size(); i++) {
             Lobby lobby = lobbies.get(i);
