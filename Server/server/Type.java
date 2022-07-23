@@ -1,0 +1,30 @@
+package server;
+
+public enum Type {
+	Undefine,
+    Succeed,
+    Failed,
+    Login,
+    Logout,
+    GetPlayerInfo,
+    ShowPlayerInfo,
+    GetLobbyManagerInfo,
+    ShowLobbyManagerInfo,
+    ViewLobby,
+    ShowLobby,
+    ReloadBalance,
+    CreateLobby,
+    DeleteLobby,
+    JoinLobby,
+    ExitLobby,
+    BeDealer,
+    StartGame,
+    ViewDeck,
+    AddBet,
+    ShowBet,
+    Hit,
+    ShowHit,
+    Stay,
+    ShowAllHands,
+    Exit
+}

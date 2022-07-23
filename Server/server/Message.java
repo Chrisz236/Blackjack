@@ -13,8 +13,8 @@ package server;
 import java.io.Serializable;
 
 public class Message implements Serializable {
-    public String data;
-    public Type type;
+    private String data;
+    private Type type;
 
     /*
      * default constructor for Message
@@ -75,33 +75,4 @@ public class Message implements Serializable {
     public void setType(Type type) {
         this.type = type;
     }
-}
-
-enum Type {
-    Undefine,
-    Succeed,
-    Failed,
-    Login,
-    Logout,
-    GetPlayerInfo,
-    ShowPlayerInfo,
-    GetLobbyManagerInfo,
-    ShowLobbyManagerInfo,
-    ViewLobby,
-    ShowLobby,
-    ReloadBalance,
-    CreateLobby,
-    DeleteLobby,
-    JoinLobby,
-    ExitLobby,
-    BeDealer,
-    StartGame,
-    ViewDeck,
-    AddBet,
-    ShowBet,
-    Hit,
-    ShowHit,
-    Stay,
-    ShowAllHands,
-    Exit
 }

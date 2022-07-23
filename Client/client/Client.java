@@ -13,6 +13,9 @@ import javax.swing.JOptionPane;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 
+import server.Message;
+import server.Type;
+
 public class Client {
 	public static String userRole = "";
 	public static boolean socketOpen = true;
@@ -54,7 +57,7 @@ public class Client {
 				while (socketOpen) {
 					Message NewMessage = (Message) objectInputStream.readObject();
 					PrintMessage(NewMessage);
-					if (NewMessage.getType().equals(new String("logout message"))) {
+					if (NewMessage.getType() == Type.Logout) {
 						if (NewMessage.getStatus().equals(new String("success"))) {
 							System.out.println("Closing");
 							socketOpen = false;
