@@ -36,7 +36,7 @@ public class Lobby {
     public String displayClientNames() {
         String s = "";
         for (Player player : players) {
-            s += player.username + "\n";
+            s += player.username + ", ";
         }
         return s;
     }
