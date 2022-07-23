@@ -8,7 +8,6 @@ public class Lobby {
     public boolean isEmpty;
     private LobbyStatus lobbyStatus;
     public int numOfPlayers;
-    public BlackJack blackjack;
 
     public Lobby(String lobbyName) {
         players = new ArrayList<>();
@@ -62,10 +61,6 @@ public class Lobby {
         return false;
     }
 
-    public void startGame() {
-        blackjack = new BlackJack(dealer, players);
-        blackjack.start();
-    }
 }
 
 enum LobbyStatus {
