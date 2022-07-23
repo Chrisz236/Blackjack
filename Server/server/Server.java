@@ -40,6 +40,7 @@ public class Server {
      *  localData[0] = USERNAME
      *  localData[1] = PASSWORD
      *  localData[2] = BALANCE
+     *  localData[3] = DEALER/PLAYER
      */
     public void loadUserData() {
         try {
@@ -52,6 +53,9 @@ public class Server {
                 String[] localData = textLine.split(",");
                 Player player = new Player(localData[0], localData[1],
                         Integer.parseInt(localData[2].trim()));
+                if(localData[3].trim().equals("DEALER")){
+                    player.isDealer = true;
+                }
                 playerInfo.put(localData[0], player);
             }
             fr.close();
