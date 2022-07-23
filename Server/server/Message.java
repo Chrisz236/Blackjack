@@ -13,7 +13,7 @@ package server;
 import java.io.Serializable;
 
 public class Message implements Serializable {
-    private String data;
+    public String data;
     public Type type;
 
     /*
