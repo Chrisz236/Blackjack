@@ -66,11 +66,7 @@ public class LobbyManager {
     }
 
     public void removePlayerFromLobby(Player player) {
-        for (Lobby lobby : lobbies) {
-            if(lobby.playerExist(player)) {
-                lobby.disconnectClient(player);
-            }
-        }
+        lobbies.get(lobbyIndex(player)).disconnectClient(player);
     }
 
     public boolean setPlayerAsDealer(Player player) {
@@ -94,5 +90,9 @@ public class LobbyManager {
 
     public void startGame(Player player) {
         lobbies.get(lobbyIndex(player)).startGame();
+    }
+
+    public void addBet(Player player, int amount) {
+        lobbies.get(lobbyIndex(player)).blackjack.bet(player, amount);
     }
 }

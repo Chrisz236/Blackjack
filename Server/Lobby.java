@@ -7,7 +7,7 @@ public class Lobby {
     public boolean isEmpty;
     private LobbyStatus lobbyStatus;
     public int numOfPlayers;
-    private BlackJack blackjack;
+    public BlackJack blackjack;
 
     public Lobby(String lobbyName) {
         players = new ArrayList<>();

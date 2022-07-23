@@ -124,6 +124,11 @@ public class ServerThread implements Runnable {
         return new Message(Type.Failed);
     }
 
+    public void addBet(Message msg) {
+        int amount = Integer.parseInt(msg.getData().trim());
+        server.lobbyManager.addBet(server.playerInfo.get(username), amount);
+    }
+
     /*
      * start game where current player is in
      */
