@@ -8,17 +8,17 @@ package server;
   Description:
           Basic information for each client
  */
+
 public class Player {
     public String username;
     private String password;
     private int balance;
-    public Deck deck;
+    public boolean isDealer = false;
 
     public Player() {
         this.username = "[Undefined]";
         this.password = "[Undefined]";
         this.balance = -1;
-        this.deck = new Deck();
     }
 
     /*
