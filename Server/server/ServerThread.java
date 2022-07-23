@@ -1,3 +1,4 @@
+package server;
 /*
     Author: Haolin Zhang
     File: ServerThread.java
