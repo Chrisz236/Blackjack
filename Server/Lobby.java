@@ -2,17 +2,16 @@ import java.util.ArrayList;
 
 public class Lobby {
     private String lobbyName;
-    // private Dealer dealer;
-    private ArrayList<Player> players;
-    private boolean isGameOver;
-    private boolean isEmpty;
-    final private int MAXIMUM_CLIENT = 50;
+    private Player dealer;
+    private static ArrayList<Player> players;
+    public boolean isEmpty;
     private LobbyStatus lobbyStatus;
     public int numOfPlayers;
-    private Game game;
+    public BlackJack blackjack;
 
     public Lobby(String lobbyName) {
         players = new ArrayList<>();
+        this.dealer =  new Player();
         this.lobbyStatus = LobbyStatus.Open;
         this.lobbyName = lobbyName;
     }
@@ -20,6 +19,7 @@ public class Lobby {
     public void connectClient(Player player) {
         players.add(player);
         numOfPlayers++;
+        final int MAXIMUM_CLIENT = 50;
         if (numOfPlayers == MAXIMUM_CLIENT) {
             this.lobbyStatus = LobbyStatus.Full;
         }
@@ -41,12 +41,8 @@ public class Lobby {
         return s;
     }
 
-    public void bet(Player player, int amount) {
-
-    }
-
-    public void setLobbyStatus(LobbyStatus lobbyStatus) {
-        this.lobbyStatus = lobbyStatus;
+    public boolean playerExist(Player player) {
+        return players.contains(player);
     }
 
     public LobbyStatus getLobbyStatus() {
@@ -55,6 +51,19 @@ public class Lobby {
 
     public String getLobbyName() {
         return this.lobbyName;
+    }
+
+    public boolean setDealer(Player player) {
+        if(this.dealer.username.equals("[Undefined]")){
+            this.dealer = player;
+            return true;
+        }
+        return false;
+    }
+
+    public void startGame() {
+        blackjack = new BlackJack(dealer, players);
+        blackjack.start();
     }
 }
 
