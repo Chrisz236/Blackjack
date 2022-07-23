@@ -91,12 +91,4 @@ public class LobbyManager {
         }
         return -1;
     }
-
-    public void startGame(Player player) {
-        lobbies.get(lobbyIndex(player)).startGame();
-    }
-
-    public void addBet(Player player, int amount) {
-        lobbies.get(lobbyIndex(player)).blackjack.bet(player, amount);
-    }
 }
