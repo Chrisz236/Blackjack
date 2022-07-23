@@ -11,7 +11,7 @@ public class Player {
     public String username;
     private String password;
     private int balance;
-    private Deck deck;
+    public Deck deck;
 
     public Player() {
         this.username = "[Undefined]";
