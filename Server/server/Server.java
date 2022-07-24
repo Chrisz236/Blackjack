@@ -53,7 +53,6 @@ public class Server {
                 String[] localData = textLine.split(",");
                 Player player = new Player(localData[0].trim(), localData[1].trim(),
                         Integer.parseInt(localData[2].trim()));
-                System.out.println("Password: [" + localData[1].trim() + "]");
                 if (localData[3].trim().equals("DEALER")) {
                     player.isDealer = true;
                 }
