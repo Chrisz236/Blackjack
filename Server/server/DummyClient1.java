@@ -46,9 +46,6 @@ public class DummyClient1 {
                     // Example of JoinLobby
                     oos.writeObject(new Message("Test lobby", Type.JoinLobby));
 
-                    // Example of JoinLobby
-                    oos.writeObject(new Message("Test Lobby", Type.JoinLobby));
-
                     // Example of ExitLobby
                     oos.writeObject(new Message(Type.ExitLobby));
 
