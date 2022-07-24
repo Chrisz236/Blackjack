@@ -57,14 +57,18 @@ public class Player {
         this.balance = this.balance + amount;
     }
 
-    public void setBalance(int amount) {
-        this.balance = amount;
-    }
-
+    /*
+     * set ObjectOutputStream for each player when they are connected
+     * @param ObjectOutputStream oos
+     */
     public void setOos(ObjectOutputStream oos) {
         Player.oos = oos;
     }
 
+    /*
+     * return the ObjectOutputStream of the player so that we can send msg to client
+     * @return ObjectOutputStream oos
+     */
     public ObjectOutputStream getOos() {
         return oos;
     }
