@@ -64,6 +64,9 @@ public class Server {
         }
     }
 
+    /*
+     * save the updated user data to file when Logout message received
+     */
     public void saveUserData() {
         try {
             String fileName = "Server/userFile.txt";
@@ -102,7 +105,7 @@ public class Server {
      */
     public void run() {
         ServerSocket serverSocket;
-        System.out.println(this.toString());
+        System.out.println(this);
         System.out.println("[WAITING FOR CONNECTION...]");
         try {
             serverSocket = new ServerSocket(this.port);
