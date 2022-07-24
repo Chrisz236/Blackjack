@@ -132,8 +132,18 @@ public class ServerThread implements Runnable {
      *         new Message("(WHO STAY)", Type.Stay)
      */
     public void send(Message msg) {
+        // extract username from msg
+        String data = msg.getData();
+        String[] line = data.split(",");
+        String player = line[0];
+
+        System.out.println("Action made by: " + player);
+
         // found which lobby player in
-        int lobbyIndex = server.lobbyManager.lobbyIndex(server.playerInfo.get(msg.getData()));
+        int lobbyIndex = server.lobbyManager.lobbyIndex(server.playerInfo.get(player));
+        System.out.println("Lobby index: " + lobbyIndex);
+        System.out.println();
+
         // send this update to all clients in lobby where player is
         server.lobbyManager.lobbies.get(lobbyIndex).send(msg);
     }
@@ -158,7 +168,7 @@ public class ServerThread implements Runnable {
                         oos.writeObject(validateLogin(msg));
                         break;
 
-                    case GetPlayerInfo:
+                    case ViewPlayerInfo:
                         System.out.println("[Requesting PlayerInfo...]");
                         oos.writeObject(getUserInfo());
                         System.out.println("[UserInfo Sent]\n");
@@ -210,27 +220,27 @@ public class ServerThread implements Runnable {
                         break;
 
                     case StartGame:
-                        System.out.println("[game command - StartGame]\n");
+                        System.out.println("[game command - StartGame]");
                         send(msg);
                         break;
 
                     case Bet:
-                        System.out.println("[game command - Bet]\n");
+                        System.out.println("[game command - Bet]");
                         send(msg);
                         break;
 
                     case Hit:
-                        System.out.println("[game command - Hit]\n");
+                        System.out.println("[game command - Hit]");
                         send(msg);
                         break;
 
                     case Stay:
-                        System.out.println("[game command - Stay]\n");
+                        System.out.println("[game command - Stay]");
                         send(msg);
                         break;
 
                     case ShowAllHands:
-                        System.out.println("[game command - ShowAllHands]\n");
+                        System.out.println("[game command - ShowAllHands]");
                         send(msg);
                         break;
 
