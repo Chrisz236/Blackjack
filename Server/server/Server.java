@@ -51,14 +51,41 @@ public class Server {
             String textLine;
             while ((textLine = br.readLine()) != null) {
                 String[] localData = textLine.split(",");
-                Player player = new Player(localData[0], localData[1],
+                Player player = new Player(localData[0].trim(), localData[1].trim(),
                         Integer.parseInt(localData[2].trim()));
-                if(localData[3].trim().equals("DEALER")){
+                System.out.println("Password: [" + localData[1].trim() + "]");
+                if (localData[3].trim().equals("DEALER")) {
                     player.isDealer = true;
                 }
                 playerInfo.put(localData[0], player);
             }
             fr.close();
+        } catch (IOException e) {
+            System.out.println(e.getMessage());
+        }
+    }
+
+    public void saveUserData() {
+        try {
+            String fileName = "Server/userFile.txt";
+            File file = new File(fileName);
+            FileWriter fw = new FileWriter(file);
+            BufferedWriter br = new BufferedWriter(fw);
+            for (var player : playerInfo.entrySet()) {
+                String dp;
+                if(player.getValue().isDealer) {
+                    dp = "DEALER";
+                } else {
+                    dp = "PLAYER";
+                }
+                String info = String.format("%s, %s, %s, %s\n",
+                        player.getValue().username,
+                        player.getValue().password,
+                        player.getValue().balance,
+                        dp);
+                fw.write(info);
+            }
+            fw.close();
         } catch (IOException e) {
             System.out.println(e.getMessage());
         }
@@ -78,7 +105,7 @@ public class Server {
         ServerSocket serverSocket;
         System.out.println(this.toString());
         System.out.println("[WAITING FOR CONNECTION...]");
-        try{
+        try {
             serverSocket = new ServerSocket(this.port);
             while (online) {
                 Socket cSocket = serverSocket.accept();
