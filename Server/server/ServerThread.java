@@ -78,6 +78,11 @@ public class ServerThread implements Runnable {
         return new Message(info, Type.ShowLobbyManagerInfo);
     }
 
+    /*
+     * add the given amount to current player
+     * looks like this:
+     *        new Message("1000", Type.ReloadBalance)
+     */
     public void reloadBalance(Message msg) {
         int amount = Integer.parseInt(msg.getData());
         if (amount >= 0) {
@@ -85,6 +90,11 @@ public class ServerThread implements Runnable {
         }
     }
 
+    /*
+     * return the String with who is in the lobby and also the status
+     * looks like this:
+     *        new Message("HAOLIN ZHANG, ALICE BOB, OPEN", Type.ShowLobby)
+     */
     public Message viewLobby(Message msg) {
         String lobbyName = msg.getData();
         return new Message(server.lobbyManager.viewLobby(lobbyName) + server.lobbyManager.getLobbyStatus(lobbyName),
@@ -93,6 +103,8 @@ public class ServerThread implements Runnable {
 
     /*
      * create a new lobby with given name
+     * looks like this:
+     *        new Message("First Lobby", Type.CreateLobby)
      */
     public void createLobby(Message msg) {
         String lobbyName = msg.getData();
@@ -101,6 +113,8 @@ public class ServerThread implements Runnable {
 
     /*
      * delete lobby with specific name, return false is lobby not found
+     * looks like this:
+     *        new Message("First Lobby", Type.DeleteLobby)
      */
     public boolean deleteLobby(Message msg) {
         String lobbyName = msg.getData();
@@ -109,6 +123,8 @@ public class ServerThread implements Runnable {
 
     /*
      * connect current player to given lobby name
+     * looks like this:
+     *        new Message("First Lobby", Type.JoinLobby)
      */
     public void joinLobby(Message msg) {
         String lobbyName = msg.getData();
@@ -118,6 +134,9 @@ public class ServerThread implements Runnable {
 
     /*
      * disconnect current player from lobby back to lobbyManager
+     * looks like this:
+     *        new Message("First Lobby", Type.ExitLobby)   - normal
+     *        new Message("First Lobby", Type.Exit)        - game command
      */
     public void exitLobby() {
         server.lobbyManager.removePlayerFromLobby(server.playerInfo.get(username));
@@ -148,6 +167,11 @@ public class ServerThread implements Runnable {
         server.lobbyManager.lobbies.get(lobbyIndex).send(msg);
     }
 
+    /*
+     * save the changed file to userData.txt
+     * looks like this:
+     *        new Message(Type.Logout)
+     */
     public void saveChangeToFile() {
         server.saveUserData();
     }
