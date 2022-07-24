@@ -1,4 +1,12 @@
 package server;
+/*
+    Author: Haolin Zhang
+    File: Type.java
+    Date: July 19, 2022
+    Ver: 1.5
+
+    Description: Defined all possible use cases for Message
+ */
 
 public enum Type {
 	Undefine,
