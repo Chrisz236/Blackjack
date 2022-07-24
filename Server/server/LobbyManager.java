@@ -2,7 +2,7 @@ package server;
 import java.util.*;
 
 public class LobbyManager {
-    private ArrayList<Lobby> lobbies;
+    public ArrayList<Lobby> lobbies;
     public int numOfLobbies;
 
     public LobbyManager() {
@@ -70,17 +70,8 @@ public class LobbyManager {
         lobbies.get(lobbyIndex(player)).disconnectClient(player);
     }
 
-    public boolean setPlayerAsDealer(Player player) {
-        for (Lobby lobby : lobbies) {
-            if(lobby.playerExist(player)) {
-                return lobby.setDealer(player);
-            }
-        }
-        return false;
-    }
-
     /*
-     * get which the index of the lobby where player in
+     * get the index of which lobby player in
      */
     public int lobbyIndex(Player player) {
         for(int i = 0; i < lobbies.size(); i++) {
