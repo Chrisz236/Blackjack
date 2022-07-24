@@ -33,7 +33,7 @@ public class Lobby {
     public void connectClient(Player player) {
         players.add(player);
         numOfPlayers++;
-        final int MAXIMUM_CLIENT = 50;
+        final int MAXIMUM_CLIENT = 5;
         if (numOfPlayers == MAXIMUM_CLIENT) {
             this.lobbyStatus = LobbyStatus.Full;
         }
