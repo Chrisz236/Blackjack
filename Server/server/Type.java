@@ -6,7 +6,7 @@ public enum Type {
     Failed,
     Login,
     Logout,
-    GetPlayerInfo,
+    ViewPlayerInfo,
     ShowPlayerInfo,
     GetLobbyManagerInfo,
     ShowLobbyManagerInfo,
