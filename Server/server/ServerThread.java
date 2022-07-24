@@ -18,7 +18,6 @@ public class ServerThread implements Runnable {
     private ObjectOutputStream oos;
     private ObjectInputStream ois;
     private String username;
-    private int lobbyIdx = -1;
 
     public ServerThread(Socket socket, Server server) {
         this.cSocket = socket;
@@ -45,17 +44,17 @@ public class ServerThread implements Runnable {
         String[] line = data.split(",");
         this.username = line[0];
         if (server.playerInfo.containsKey(username)) {
-            if (server.playerInfo.get(username).getPassword(username).equals(line[1])) {
+            if (server.playerInfo.get(username).getPassword(username).equals(line[1].trim())) {
                 System.out.println("[Verify Succeed]");
                 server.numOfClientsOnline++;
-                if(server.playerInfo.get(username).isDealer) {
+                if (server.playerInfo.get(username).isDealer) {
                     return new Message("DEALER", Type.Succeed);
                 } else {
                     return new Message("PLAYER", Type.Succeed);
                 }
             }
         }
-        System.out.println("[Verify Failed]");
+        System.out.println("[Failed to Verify]");
         return new Message(Type.Failed);
     }
 
@@ -72,7 +71,7 @@ public class ServerThread implements Runnable {
      * return the number of lobbies and how many people online, also current lobbies (all in data part)
      */
     public Message getLobbyManagerInfo() {
-        String info = String.format("num of lobby: %s, num of clients online: %d, ", server.lobbyManager.numOfLobbies, server.numOfClientsOnline);
+        String info = String.format("%d, %d, ", server.lobbyManager.numOfLobbies, server.numOfClientsOnline);
         if (server.lobbyManager.numOfLobbies > 0) {
             info += server.lobbyManager.displayLobbies();
         }
@@ -114,7 +113,7 @@ public class ServerThread implements Runnable {
     public void joinLobby(Message msg) {
         String lobbyName = msg.getData();
         server.lobbyManager.addPlayerToLobby(lobbyName, server.playerInfo.get(username));
-        lobbyIdx = server.lobbyManager.lobbyIndex(server.playerInfo.get(username));
+        server.playerInfo.get(username).setOos(oos);
     }
 
     /*
@@ -124,8 +123,23 @@ public class ServerThread implements Runnable {
         server.lobbyManager.removePlayerFromLobby(server.playerInfo.get(username));
     }
 
-    public void startGame() {
 
+    /*
+     * Message looks like:
+     *         new Message("(WHO START THE GAME)", Type.StartGame)
+     *         new Message("(WHO BET)", Type.Bet)
+     *         new Message("(WHO HIT)", Type.Hit)
+     *         new Message("(WHO STAY)", Type.Stay)
+     */
+    public void send(Message msg) {
+        // found which lobby player in
+        int lobbyIndex = server.lobbyManager.lobbyIndex(server.playerInfo.get(msg.getData()));
+        // send this update to all clients in lobby where player is
+        server.lobbyManager.lobbies.get(lobbyIndex).send(msg);
+    }
+
+    public void saveChangeToFile() {
+        server.saveUserData();
     }
 
     @Override
@@ -196,19 +210,43 @@ public class ServerThread implements Runnable {
                         break;
 
                     case StartGame:
-                        System.out.println("[Starting Game...]");
-                        startGame();
-                        System.out.println("[Game Started]");
+                        System.out.println("[game command - StartGame]\n");
+                        send(msg);
+                        break;
+
+                    case Bet:
+                        System.out.println("[game command - Bet]\n");
+                        send(msg);
+                        break;
+
+                    case Hit:
+                        System.out.println("[game command - Hit]\n");
+                        send(msg);
+                        break;
+
+                    case Stay:
+                        System.out.println("[game command - Stay]\n");
+                        send(msg);
+                        break;
+
+                    case ShowAllHands:
+                        System.out.println("[game command - ShowAllHands]\n");
+                        send(msg);
+                        break;
+
+                    case Exit:
+                        System.out.println("[Exiting Game...]");
+                        exitLobby();
+                        System.out.println("[Game Exited...]\n");
+
+                        break;
 
                     case Logout:
                         System.out.println("[Disconnecting...]");
                         server.numOfClientsOnline--;
                         socketIsOpen = false;
+                        saveChangeToFile();
                         System.out.println("[Disconnected]");
-                        break;
-
-                    case AddBet:
-                        System.out.println("[Adding Bet...]");
                         break;
 
                     default:
