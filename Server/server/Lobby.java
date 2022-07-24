@@ -1,9 +1,10 @@
 package server;
+import java.io.IOException;
+import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 
 public class Lobby {
     private String lobbyName;
-    private Player dealer;
     private static ArrayList<Player> players;
     public boolean isEmpty;
     private LobbyStatus lobbyStatus;
@@ -11,7 +12,6 @@ public class Lobby {
 
     public Lobby(String lobbyName) {
         players = new ArrayList<>();
-        this.dealer =  new Player();
         this.lobbyStatus = LobbyStatus.Open;
         this.lobbyName = lobbyName;
     }
@@ -53,14 +53,15 @@ public class Lobby {
         return this.lobbyName;
     }
 
-    public boolean setDealer(Player player) {
-        if(this.dealer.username.equals("[Undefined]")){
-            this.dealer = player;
-            return true;
+    public void send(Message msg) {
+        try{
+            for(Player player : players) {
+                player.getOos().writeObject(msg);
+            }
+        }catch (IOException e) {
+            System.out.println(e.getMessage());
         }
-        return false;
     }
-
 }
 
 enum LobbyStatus {
