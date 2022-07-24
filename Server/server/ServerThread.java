@@ -127,7 +127,7 @@ public class ServerThread implements Runnable {
     /*
      * Message looks like:
      *         new Message("(WHO START THE GAME)", Type.StartGame)
-     *         new Message("(WHO BET)", Type.Bet)
+     *         new Message("(WHO BET), (AMOUNT)", Type.Bet)
      *         new Message("(WHO HIT)", Type.Hit)
      *         new Message("(WHO STAY)", Type.Stay)
      */
