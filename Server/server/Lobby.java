@@ -1,6 +1,14 @@
 package server;
+/*
+    Author: Haolin Zhang
+    File: Lobby.java
+    Date: July 19, 2022
+    Ver: 1.5
+
+    Description: Lobby holds players in same game
+ */
+
 import java.io.IOException;
-import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 
 public class Lobby {
@@ -10,12 +18,18 @@ public class Lobby {
     private LobbyStatus lobbyStatus;
     public int numOfPlayers;
 
+    /*
+     * default constructor for Lobby class
+     */
     public Lobby(String lobbyName) {
         players = new ArrayList<>();
         this.lobbyStatus = LobbyStatus.Open;
         this.lobbyName = lobbyName;
     }
 
+    /*
+     * add player to current connected player list
+     */
     public void connectClient(Player player) {
         players.add(player);
         numOfPlayers++;
@@ -25,6 +39,9 @@ public class Lobby {
         }
     }
 
+    /*
+     * remove the player from current lobby room
+     */
     public void disconnectClient(Player player) {
         players.remove(player);
         numOfPlayers--;
@@ -33,6 +50,9 @@ public class Lobby {
         }
     }
 
+    /*
+     * return a String contains every player's name in this game
+     */
     public String displayClientNames() {
         String s = "";
         for (Player player : players) {
@@ -41,18 +61,30 @@ public class Lobby {
         return s;
     }
 
+    /*
+     * return true if given player is existed in current lobby room
+     */
     public boolean playerExist(Player player) {
         return players.contains(player);
     }
 
+    /*
+     * return the status of the current lobby room
+     */
     public LobbyStatus getLobbyStatus() {
         return this.lobbyStatus;
     }
 
+    /*
+     * return the name of the current lobby room
+     */
     public String getLobbyName() {
         return this.lobbyName;
     }
 
+    /*
+     * broadcast the msg to every client connected to current lobby room
+     */
     public void send(Message msg) {
         try{
             for(Player player : players) {
