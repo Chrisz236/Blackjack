@@ -9,11 +9,14 @@ package server;
           Basic information for each client
  */
 
+import java.io.ObjectOutputStream;
+
 public class Player {
     public String username;
-    private String password;
-    private int balance;
+    public String password;
+    public int balance;
     public boolean isDealer = false;
+    public static ObjectOutputStream oos;
 
     public Player() {
         this.username = "[Undefined]";
@@ -56,5 +59,13 @@ public class Player {
 
     public void setBalance(int amount) {
         this.balance = amount;
+    }
+
+    public void setOos(ObjectOutputStream oos) {
+        Player.oos = oos;
+    }
+
+    public ObjectOutputStream getOos() {
+        return oos;
     }
 }
