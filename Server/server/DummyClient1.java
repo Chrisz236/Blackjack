@@ -2,6 +2,7 @@ package server;
 
 import java.io.*;
 import java.net.*;
+import java.util.Map;
 
 public class DummyClient1 {
     public static String host = "localhost";
@@ -29,10 +30,30 @@ public class DummyClient1 {
                     // Data part in LoginResult is "PLAYER" / "DEALER"
                     System.out.println("Role: " + LoginResult.getData());
 
-                    // Example of ViewPlayerInfo
+                    // Example of ViewPlayerInfo (for certain user)
                     oos.writeObject(new Message(Type.ViewPlayerInfo));
                     Message msg = (Message) ois.readObject();
                     System.out.println("Message from getUserInfo():\n" + msg.getData());
+
+                    // Example of ViewAllPlayerInfo (one request for all user)
+                    // Every client call this function will return the full player's info Map
+                    // Could be used in initializing stage
+                    oos.writeObject(new Message(Type.ViewAllPlayerInfo));
+                    try{
+                        // First type cast (get raw message)
+                        Message msg1 = (Message) ois.readObject();
+
+                        // Second type cast (get all player's info as a Map)
+                        Map<String, Player> map = (Map<String, Player>) msg1.getData();
+
+                        // For-each loop to get every player's info in that map, then extract required info
+                        for(var player : map.entrySet()) {
+                            // This is how you access the data
+                            System.out.printf("%s, %s, %s%n", player.getValue().username, player.getValue().balance, player.getValue().isDealer);
+                        }
+                    } catch (ClassCastException e) {
+                        System.out.println(e.getMessage());
+                    }
 
                     // Example of ReloadBalance
                     oos.writeObject(new Message("2000", Type.ReloadBalance));
