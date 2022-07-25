@@ -91,6 +91,28 @@ public class ServerThread implements Runnable {
     }
 
     /*
+     * return the balance for certain user
+     * looks like this:
+     *        new Message("HAOLIN ZHANG", Type.GetBalance)
+     */
+    public Message getBalance(Message msg) {
+        return new Message(String.valueOf(server.playerInfo.get(msg.getData()).getBalance(msg.getData())), Type.ShowBalance);
+    }
+
+    /*
+     * update the player's balance for certain user after a game finished
+     * looks like this:
+     *        new Message("HAOLIN ZHANG, 5200", Type.UpdateBalance)
+     */
+    public void updateBalance(Message msg) {
+        String data = msg.getData();
+        String[] line = data.split(",");
+        String username = line[0];
+        int newBalance = Integer.parseInt(line[1].trim());
+        server.playerInfo.get(username).balance = newBalance;
+    }
+
+    /*
      * return the String with who is in the lobby and also the status
      * looks like this:
      *        new Message("HAOLIN ZHANG, ALICE BOB, OPEN", Type.ShowLobby)
@@ -208,6 +230,17 @@ public class ServerThread implements Runnable {
                         System.out.println("[Reloading...]");
                         reloadBalance(msg);
                         System.out.println("[Balance Updated]\n");
+                        break;
+
+                    case UpdateBalance:
+                        System.out.println("[Update Balance for User...]");
+                        updateBalance(msg);
+                        System.out.println("[Balance Updated]\n");
+
+                    case GetBalance:
+                        System.out.println("[Requesting Balance...]");
+                        oos.writeObject(getBalance(msg));
+                        System.out.println("[Balance Sent]\n");
                         break;
 
                     case ViewLobby:
