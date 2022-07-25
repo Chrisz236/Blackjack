@@ -30,7 +30,7 @@ public class Message implements Serializable {
      * constructor for Message with parameter
      * @param msg
      */
-    public Message(String msg, Type type) {
+    public Message(Object msg, Type type) {
         this.data = msg;
         this.type = type;
     }
@@ -53,26 +53,10 @@ public class Message implements Serializable {
     }
 
     /*
-     * member function to set content of the Message object
-     * @param msg
-     */
-    public void setData(String msg) {
-        this.data = msg;
-    }
-
-    /*
      * member function to get type from Message object
      * @return String
      */
     public Type getType() {
         return this.type;
-    }
-
-    /*
-     * member function to set type of the Message object
-     * @param msg
-     */
-    public void setType(Type type) {
-        this.type = type;
     }
 }
