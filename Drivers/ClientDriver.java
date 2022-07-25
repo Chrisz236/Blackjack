@@ -8,14 +8,14 @@ class ClientDriver {
 	
 	public static void main(String[] args) throws ClassNotFoundException, IOException {
 		
-		System.out.println("Enter ip address: ");
-		Scanner input = new Scanner(System.in);
+		//System.out.println("Enter ip address: ");
+		//Scanner input = new Scanner(System.in);
 		
-		String ip = input.nextLine();
-		ip = ip.trim();
+		//String ip = input.nextLine();
+		//ip = ip.trim();
 		// get client's own IP address when creating it to connect multiple other clients
-		Client client = new Client(ip);
+		Client client = new Client("localhost");
 		//client.run();
-		input.close();
+		//input.close();
 	}
 }

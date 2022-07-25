@@ -31,7 +31,7 @@ public class Client {
 	private static ObjectInputStream objectInputStream;
 	
 	private static LoginWindow loginWindow;
-	private static GameRoomWindow gameRoomWindow;
+	private static LobbyViewWindow lobbyViewWindow;
 	
 	public Client(String ip) throws ClassNotFoundException, IOException {
 		int port = 7777;
@@ -44,30 +44,26 @@ public class Client {
 			inputStream = socket.getInputStream();
 			objectInputStream = new ObjectInputStream(inputStream);
 			
-			loginWindow = new LoginWindow(socket, objectOutputStream, objectInputStream, this);
-			//loginWindow.processCommands();
-	         
+			loginWindow = new LoginWindow(socket, objectInputStream, objectOutputStream, this);
+			//loginWindow.processCommands(); TODO re-enable once lobbyView is complete
 	         
 	        if (socketOpen) {
-	        	gameRoomWindow = new GameRoomWindow(socket, objectOutputStream, objectInputStream,  this);
-				//chatWindow.processCommands();
+	        	lobbyViewWindow = new LobbyViewWindow(socket, objectOutputStream, objectInputStream,  this);
 	        }
 	        
 	        try {
 				while (socketOpen) {
-					Message NewMessage = (Message) objectInputStream.readObject();
-					PrintMessage(NewMessage);
-					if (NewMessage.getType() == Type.Logout) {
-						if (NewMessage.getStatus().equals(new String("success"))) {
+					Message newMsg = (Message) objectInputStream.readObject();
+					PrintMessage(newMsg);
+					if (newMsg.getType() == Type.Logout) {
+						if (newMsg.getType() == Type.Succeed) {
 							System.out.println("Closing");
 							socketOpen = false;
 							break;
 						}
-					} else if (NewMessage.getType().equals(new String("data"))) {
-						gameRoomWindow.NewConversationMessage(NewMessage);
-					} //else if (NewMessage.getType().equals(new String("IT command return info"))) {
-						//itWindow.SetGuiText(NewMessage.getData());
-					//}
+					} else if (newMsg.getType() == Type.CreateLobby){
+						lobbyViewWindow.NewLobbyMessage(newMsg);
+					}
 				}
 			} catch (ClassNotFoundException | IOException e) {
 				// TODO Auto-generated catch block
@@ -82,7 +78,9 @@ public class Client {
 		}	
 	}
 	
-//	public void run() {
-//		
-//	}
+	private static void PrintMessage(Message msg) {
+		System.out.println("Type: " + msg.getType());
+		System.out.println("Data: " + msg.getData());
+		System.out.println("-----------------------------------------------------------");
+	}
 }
