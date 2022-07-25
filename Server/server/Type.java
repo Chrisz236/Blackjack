@@ -32,6 +32,5 @@ public enum Type {
     Bet,
     Hit,
     Stay,
-    ShowAllHands,
     Exit
 }
