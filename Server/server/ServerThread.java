@@ -40,7 +40,7 @@ public class ServerThread implements Runnable {
      *                 false for invalid
      */
     public Message validateLogin(Message msg) {
-        String data = msg.getData();
+        String data = (String) msg.getData();
         String[] line = data.split(",");
         this.username = line[0];
         if (server.playerInfo.containsKey(username)) {
@@ -84,7 +84,7 @@ public class ServerThread implements Runnable {
      *        new Message("1000", Type.ReloadBalance)
      */
     public void reloadBalance(Message msg) {
-        int amount = Integer.parseInt(msg.getData());
+        int amount = Integer.parseInt((String) msg.getData());
         if (amount >= 0) {
             server.playerInfo.get(username).addBalance(amount);
         }
@@ -96,7 +96,7 @@ public class ServerThread implements Runnable {
      *        new Message("HAOLIN ZHANG", Type.GetBalance)
      */
     public Message getBalance(Message msg) {
-        return new Message(String.valueOf(server.playerInfo.get(msg.getData()).getBalance(msg.getData())), Type.ShowBalance);
+        return new Message(String.valueOf(server.playerInfo.get((String) msg.getData()).getBalance((String) msg.getData())), Type.ShowBalance);
     }
 
     /*
@@ -105,7 +105,7 @@ public class ServerThread implements Runnable {
      *        new Message("HAOLIN ZHANG, 5200", Type.UpdateBalance)
      */
     public void updateBalance(Message msg) {
-        String data = msg.getData();
+        String data = (String) msg.getData();
         String[] line = data.split(",");
         String username = line[0];
         int newBalance = Integer.parseInt(line[1].trim());
@@ -118,7 +118,7 @@ public class ServerThread implements Runnable {
      *        new Message("HAOLIN ZHANG, ALICE BOB, OPEN", Type.ShowLobby)
      */
     public Message viewLobby(Message msg) {
-        String lobbyName = msg.getData();
+        String lobbyName = (String) msg.getData();
         return new Message(server.lobbyManager.viewLobby(lobbyName) + server.lobbyManager.getLobbyStatus(lobbyName),
                 Type.ShowLobby);
     }
@@ -129,7 +129,7 @@ public class ServerThread implements Runnable {
      *        new Message("First Lobby", Type.CreateLobby)
      */
     public void createLobby(Message msg) {
-        String lobbyName = msg.getData();
+        String lobbyName = (String) msg.getData();
         server.lobbyManager.createLobby(lobbyName);
     }
 
@@ -139,7 +139,7 @@ public class ServerThread implements Runnable {
      *        new Message("First Lobby", Type.DeleteLobby)
      */
     public boolean deleteLobby(Message msg) {
-        String lobbyName = msg.getData();
+        String lobbyName = (String) msg.getData();
         return server.lobbyManager.deleteLobby(lobbyName);
     }
 
@@ -149,7 +149,7 @@ public class ServerThread implements Runnable {
      *        new Message("First Lobby", Type.JoinLobby)
      */
     public void joinLobby(Message msg) {
-        String lobbyName = msg.getData();
+        String lobbyName = (String) msg.getData();
         server.lobbyManager.addPlayerToLobby(lobbyName, server.playerInfo.get(username));
         server.playerInfo.get(username).setOos(oos);
     }
@@ -174,7 +174,7 @@ public class ServerThread implements Runnable {
      */
     public void send(Message msg) {
         // extract username from msg
-        String data = msg.getData();
+        String data = (String) msg.getData();
         String[] line = data.split(",");
         String player = line[0];
 
@@ -281,13 +281,8 @@ public class ServerThread implements Runnable {
                         send(msg);
                         break;
 
-                    case Bet:
-                        System.out.println("[game command - Bet]");
-                        send(msg);
-                        break;
-
                     case Hit:
-                        System.out.println("[game command - Hit]");
+                        System.out.println("[game command - Hit/Draw]");
                         send(msg);
                         break;
 
@@ -296,16 +291,10 @@ public class ServerThread implements Runnable {
                         send(msg);
                         break;
 
-                    case ShowAllHands:
-                        System.out.println("[game command - ShowAllHands]");
-                        send(msg);
-                        break;
-
                     case Exit:
                         System.out.println("[Exiting Game...]");
                         exitLobby();
                         System.out.println("[Game Exited...]\n");
-
                         break;
 
                     case Logout:
