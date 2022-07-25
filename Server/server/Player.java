@@ -10,8 +10,9 @@ package server;
  */
 
 import java.io.ObjectOutputStream;
+import java.io.Serializable;
 
-public class Player {
+public class Player implements Serializable {
     public String username;
     public String password;
     public int balance;
