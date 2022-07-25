@@ -42,6 +42,8 @@ public class DummyClient1 {
 
                     // Example of GetLobbyManagerInfo
                     oos.writeObject(new Message(Type.GetLobbyManagerInfo));
+                    Message msg1 = (Message) ois.readObject();
+                    System.out.println("Message from GetLobbyManagerInfo():\n" + msg1.getData());
 
                     // Example of JoinLobby
                     oos.writeObject(new Message("Test lobby", Type.JoinLobby));
@@ -56,7 +58,7 @@ public class DummyClient1 {
                     oos.writeObject(new Message("HAOLIN ZHANG", Type.StartGame));
 
                     // Example of Hit (game command)
-                    oos.writeObject(new Message("HAOLIN ZHANG", Type.Hit));
+                    oos.writeObject(new Message("HAOLIN ZHANG, DIAMOND FIVE", Type.Hit));
 
                     // Example of Bet (game command)
                     oos.writeObject(new Message("HAOLIN ZHANG, 2000", Type.Bet));
