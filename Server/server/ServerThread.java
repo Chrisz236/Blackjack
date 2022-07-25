@@ -68,6 +68,14 @@ public class ServerThread implements Runnable {
     }
 
     /*
+     * return an ArrayList<Player> players, this contains all data of a user
+     * you will need "username", "balance", and "isDealer"
+     */
+    public Message getAllUserInfo() {
+        return new Message(server.playerInfo, Type.ShowAllPlayerInfo);
+    }
+
+    /*
      * return the number of lobbies and how many people online, also current lobbies (all in data part)
      */
     public Message getLobbyManagerInfo() {
@@ -218,6 +226,12 @@ public class ServerThread implements Runnable {
                         System.out.println("[Requesting PlayerInfo...]");
                         oos.writeObject(getUserInfo());
                         System.out.println("[UserInfo Sent]\n");
+                        break;
+
+                    case ViewAllPlayerInfo:
+                        System.out.println("[Requesting AllPlayerInfo...]");
+                        oos.writeObject(getAllUserInfo());
+                        System.out.println("[AllUserInfo Sent]\n");
                         break;
 
                     case GetLobbyManagerInfo:
