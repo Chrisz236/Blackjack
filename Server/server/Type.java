@@ -16,6 +16,8 @@ public enum Type {
     Logout,
     ViewPlayerInfo,
     ShowPlayerInfo,
+    ViewAllPlayerInfo,
+    ShowAllPlayerInfo,
     GetLobbyManagerInfo,
     ShowLobbyManagerInfo,
     ViewLobby,
