@@ -13,7 +13,7 @@ package server;
 import java.io.Serializable;
 
 public class Message implements Serializable {
-    private String data;
+    private Object data;
     private Type type;
 
     /*
@@ -46,9 +46,9 @@ public class Message implements Serializable {
 
     /*
      * member function to get data from Message object
-     * @return String
+     * @return Object
      */
-    public String getData() {
+    public Object getData() {
         return this.data;
     }
 
