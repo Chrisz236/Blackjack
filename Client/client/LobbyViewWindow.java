@@ -58,6 +58,7 @@ public class LobbyViewWindow {
 	//private static Lobby currentLobby = null;
 	private static JButton newLobbyButton = null;
 	private static LobbyManager lobbyManager = new LobbyManager();
+	private static GameRoomWindow gameRoom = null;
 	
 	public class Window extends JFrame {
 		Window() {
@@ -117,6 +118,7 @@ public class LobbyViewWindow {
 	              			Message newMsg = new Message(lobbyName, Type.JoinLobby);
 	  						objectOutput.writeObject(newMsg);
 	  						
+	  						gameRoom = new GameRoomWindow(client);
 	              		} catch (IOException e1) {
 	  						// TODO Auto-generated catch block
 	  						e1.printStackTrace();
@@ -208,23 +210,24 @@ public class LobbyViewWindow {
 
         lobbyPanel = new LobbyPanel(Window);
         lobbyList = new LobbyList();
-        newLobbyButton = lobbyList.NewButton("Create Lobby");
-        
-        
-        newLobbyButton.addActionListener((ActionListener) new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-          	
-	          	String name = JOptionPane.showInputDialog("Enter Name Of Lobby");
-				if (name == null) { return; }
-				try {
-					objectOutput.writeObject(new Message(name, Type.CreateLobby));
-				} catch (IOException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				}
-	          }
-		});
+        if (client.userRole == "dealer") {
+        	newLobbyButton = lobbyList.NewButton("Create Lobby");
+            
+            newLobbyButton.addActionListener((ActionListener) new ActionListener() {
+    			@Override
+    			public void actionPerformed(ActionEvent e) {
+              	
+    	          	String name = JOptionPane.showInputDialog("Enter Name Of Lobby");
+    				if (name == null) { return; }
+    				try {
+    					objectOutput.writeObject(new Message(name, Type.CreateLobby));
+    				} catch (IOException e1) {
+    					// TODO Auto-generated catch block
+    					e1.printStackTrace();
+    				}
+    	          }
+    		});
+        }
         
         EventQueue.invokeLater(new Runnable() {
             @Override
