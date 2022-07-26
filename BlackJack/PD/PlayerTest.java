@@ -10,5 +10,6 @@ public class PlayerTest {
 		
 		assertFalse(player.getHasNoMoney());
 	}
+	
 
 }
