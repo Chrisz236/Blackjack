@@ -91,6 +91,11 @@ public class Player {
 	public void setBalance(double balance) {
 		this.balance = balance;
 	}
+	
+
+	public void UpdateBalance(double balance) {
+		this.balance += balance;
+	}
 
 
 
