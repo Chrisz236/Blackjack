@@ -13,7 +13,7 @@ public class Player {
 	
 	
 	public Player(String name, double balance) {
-		hand[15]=" ";
+		hand=new String[15];
 		setName(name);
 		setBalance(balance);
 		handCounter=0;
@@ -21,6 +21,7 @@ public class Player {
 		hasLost=false;
 		bet=0;
 		hitOrpass=false;
+		setHasNoMoney();
 		
 	}
 
@@ -32,13 +33,13 @@ public class Player {
 
 
 
-	public boolean setHasNoMoney() {
+	public void setHasNoMoney() {
 		if(getBalance()==0) {
-			return false;
+			hasNoMoney=true;
 		}
 		
 		else
-			return true;
+			hasNoMoney= false;
 	}
 
 
