@@ -23,8 +23,8 @@ public class LoginWindow implements LoginInterface {
 	//private Client user;
 	
 	//Socket Connections
-	private ObjectOutputStream out;
-	private ObjectInputStream in;
+	private ObjectOutputStream out;		//output
+	private ObjectInputStream in;		//input
 	
 	//LoginWindow Constructor
 	public LoginWindow(TestUser newUser) {
@@ -38,6 +38,9 @@ public class LoginWindow implements LoginInterface {
 //		processCommands();
 //	}
 	
+	/*
+	 * Runs GUI Window Interface
+	 */
 	public void processCommands() {
 		
 		//Create two text boxes
@@ -56,7 +59,7 @@ public class LoginWindow implements LoginInterface {
 		int inputs = JOptionPane.showConfirmDialog(null, loginPanel,
 				"Enter User Credentials", JOptionPane.OK_CANCEL_OPTION);
 		
-		//Print to console (test)
+		//Print to console (test user interface)
 		if (inputs == JOptionPane.OK_OPTION) {
 			System.out.println("Username: " + fieldOne.getText());
 			System.out.println("Password: " + fieldTwo.getText());

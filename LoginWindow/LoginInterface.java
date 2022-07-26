@@ -10,7 +10,7 @@
 //Interface command for LoginWindow.
 public interface LoginInterface {
 	
-	//Process GUI functions
+	//Process GUI functions; open GUI Window
 	void processCommands();
 	
 }
