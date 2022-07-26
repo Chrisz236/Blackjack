@@ -93,7 +93,7 @@ public class Player {
 	}
 	
 
-	public void UpdateBalance(double balance) {
+	public void UPDATEBalance(double balance) {
 		this.balance += balance;
 	}
 
