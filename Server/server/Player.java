@@ -38,7 +38,7 @@ public class Player implements Serializable {
      * getter function for password
      * @return String password
      */
-    public String getPassword(String username) {
+    public String getPassword() {
         return this.password;
     }
 
@@ -46,7 +46,7 @@ public class Player implements Serializable {
      * getter function for password
      * @return int balance
      */
-    public int getBalance(String username) {
+    public int getBalance() {
         return this.balance;
     }
 
