@@ -46,15 +46,12 @@ public class LobbyViewWindow {
 	private static ObjectOutputStream objectOutput;
 	private static ObjectInputStream objectInput;
 	
-	private static Boolean lobbyOpened = false;
-	private int ButtonCount = 1;    
+	private static Boolean lobbyOpened = false;   
 	private static List<Lobby> lobbies = new ArrayList<Lobby>(); 
 
 	private static JFrame Window = new JFrame("Lobby View Window");
 	private JList lobbiesJList = new JList();
 	private static LobbyPanel lobbyPanel = null;
-	//private static Lobby currentLobby = null;
-	private static LobbyManager lobbyManager;
 	private static GameRoomWindow gameRoom = null;
 	
 	public class Window extends JFrame {
@@ -186,7 +183,7 @@ public class LobbyViewWindow {
     	}
     	
     	private String updateLobbyName(int indx) {
-   		 Lobby selectedLobby = lobbyManager.lobbies.get(indx);
+   		 Lobby selectedLobby = lobbies.get(indx);
    		 return selectedLobby.toString();
    	 	}
     }
@@ -232,9 +229,9 @@ public class LobbyViewWindow {
 		 }
 		 Scanner scan = new Scanner((String) msg.getData());
 		 scan.useDelimiter(",");
-		 scan.next();
-		 scan.next();
 		 while (scan.hasNext()) {
+			scan.next();
+			scan.next();
 			lobbies.add(new Lobby(scan.next()));
 		 }
 		 scan.close();
