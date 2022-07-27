@@ -34,7 +34,7 @@ public class Player {
 
 
 	public void setHasNoMoney() {
-		if(getBalance()==0) {
+		if(getBalance()<=0) {
 			hasNoMoney=true;
 		}
 		
@@ -44,7 +44,7 @@ public class Player {
 
 
 
-	public boolean isHasLost() {
+	public boolean HasLost() {
 		return hasLost;
 	}
 
