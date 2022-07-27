@@ -44,7 +44,7 @@ public class ServerThread implements Runnable {
         String[] line = data.split(",");
         this.username = line[0];
         if (server.playerInfo.containsKey(username)) {
-            if (server.playerInfo.get(username).getPassword(username).equals(line[1].trim())) {
+            if (server.playerInfo.get(username).getPassword().equals(line[1].trim())) {
                 System.out.println("[Verify Succeed]");
                 server.numOfClientsOnline++;
                 if (server.playerInfo.get(username).isDealer) {
@@ -63,7 +63,7 @@ public class ServerThread implements Runnable {
      */
     public Message getUserInfo() {
         String info = String.format("%s, %s", username,
-                server.playerInfo.get(username).getBalance(username));
+                server.playerInfo.get(username).getBalance());
         return new Message(info, Type.ShowPlayerInfo);
     }
 
@@ -104,7 +104,7 @@ public class ServerThread implements Runnable {
      *        new Message("HAOLIN ZHANG", Type.GetBalance)
      */
     public Message getBalance(Message msg) {
-        return new Message(String.valueOf(server.playerInfo.get((String) msg.getData()).getBalance((String) msg.getData())), Type.ShowBalance);
+        return new Message(String.valueOf(server.playerInfo.get((String) msg.getData()).getBalance()), Type.ShowBalance);
     }
 
     /*
