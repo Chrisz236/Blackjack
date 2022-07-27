@@ -14,7 +14,7 @@ public class LobbyManager {
         StringBuilder lobbiesName = new StringBuilder();
         if(lobbies.size() > 0) {
             for (Lobby lobby : lobbies) {
-                lobbiesName.append(lobby.getLobbyName()).append(", ");
+                lobbiesName.append(lobby.toString()).append(", ");
             }
         } else {
             return "[NO LOBBY]";
@@ -24,7 +24,7 @@ public class LobbyManager {
 
     public LobbyStatus getLobbyStatus(String lobbyName) {
         for (Lobby lobby : lobbies) {
-            if(lobby.getLobbyName().equals(lobbyName)) {
+            if(lobby.toString().equals(lobbyName)) {
                 return lobby.getLobbyStatus();
             }
         }
@@ -33,7 +33,7 @@ public class LobbyManager {
 
     public String viewLobby(String lobbyName) {
         for (Lobby lobby : lobbies) {
-            if(lobby.getLobbyName().equals(lobbyName)) {
+            if(lobby.toString().equals(lobbyName)) {
                 return lobby.displayClientNames();
             }
         }
@@ -50,7 +50,7 @@ public class LobbyManager {
         if(numOfLobbies == 0)
             return false;
         for(int i = 0 ; i < lobbies.size(); i++) {
-            if(lobbies.get(i).getLobbyName().equals(lobbyName)){
+            if(lobbies.get(i).toString().equals(lobbyName)){
                 lobbies.remove(i);
                 numOfLobbies--;
                 return true;
@@ -61,7 +61,7 @@ public class LobbyManager {
 
     public void addPlayerToLobby(String lobbyName, Player player) {
         for (Lobby lobby : lobbies) {
-            if (lobby.getLobbyName().equals(lobbyName))
+            if (lobby.toString().equals(lobbyName))
                 lobby.connectClient(player);
         }
     }

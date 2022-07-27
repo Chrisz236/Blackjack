@@ -69,9 +69,11 @@ public class Deck {
 	}
 	
 	//Draw from the deck
-	public void draw(Deck comingFrom) {
+	public String draw(Deck comingFrom) {
 		this.cards.add(comingFrom.getCard(0));
+		String cardInfo = comingFrom.getCard(0).toString();
 		comingFrom.removeCard(0);
+		return cardInfo;
 	}
 	
 	public int deckSize() {
