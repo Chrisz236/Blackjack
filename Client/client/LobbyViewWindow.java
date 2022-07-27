@@ -105,7 +105,7 @@ public class LobbyViewWindow {
     		JoinLobbyButton.addActionListener((ActionListener) new ActionListener() {
     			@Override
 		        public void actionPerformed(ActionEvent e) {
-		          	if (lobbyOpened) {	
+		          	if (lobbyOpened || lobbyName.equals("")) {	
 		          		return;
 		          	}
 		          	else {
@@ -229,10 +229,13 @@ public class LobbyViewWindow {
 		 }
 		 Scanner scan = new Scanner((String) msg.getData());
 		 scan.useDelimiter(",");
+		 scan.next();
+		 scan.next();
 		 while (scan.hasNext()) {
-			scan.next();
-			scan.next();
-			lobbies.add(new Lobby(scan.next()));
+			 String name = scan.next();
+			 if (name.trim().equals(""))
+				 continue;
+			 lobbies.add(new Lobby(name));
 		 }
 		 scan.close();
 		 lobbiesJList.setListData(lobbies.toArray());

@@ -3,6 +3,7 @@ package client;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
@@ -16,6 +17,7 @@ import client.LobbyViewWindow.LobbyPanel;
 import server.Lobby;
 import server.LobbyManager;
 import server.Message;
+import server.Player;
 import server.Type;
 
 import javax.imageio.ImageIO;
@@ -29,12 +31,18 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 public class GameRoomWindow {
 	private Client client;
 	private Socket socket;
 	private ObjectOutputStream os;
 	private ObjectInputStream ois;
+	private BlackJack game = null;
+	private boolean gameStarted = false;
+	public Map<String, Player> playersInfo = new HashMap<>();
 	
 	private JFrame Window = new JFrame("Game Room Window");
 	private static GamePanel gamePanel = null;
@@ -51,7 +59,25 @@ public class GameRoomWindow {
 		os = output;
 		ois = input;
 		
+		try {
+			os.writeObject(new Message(Type.ViewAllPlayerInfo));
+			Message msg = (Message) ois.readObject();
+			playersInfo = (Map<String, Player>) msg.getData();
+		} catch (IOException | ClassNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
 		gamePanel = new GamePanel(Window);
+		Message msg = null;
+		try {
+			msg = (Message) ois.readObject();
+			if (msg.getType() == Type.StartGame)
+				game.start();
+  		} catch (IOException | ClassNotFoundException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
 		
 		EventQueue.invokeLater(new Runnable() {
             @Override
@@ -66,11 +92,11 @@ public class GameRoomWindow {
                 Window.setLocationRelativeTo(null);
                 Window.setVisible(true);
                 Window.setResizable(false);
-                Window.setSize(900,  700);
-                Window.setLocation(960, 540);
+                Window.setSize(600,  700);
+                Window.setLocation(500, 100);
                 Window.setDefaultLookAndFeelDecorated(true);
                 Window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-                Window.add(lobbyPanel);
+                Window.add(gamePanel);
             }
         });
 	}
@@ -79,16 +105,20 @@ public class GameRoomWindow {
 		private JButton HitButton = new JButton("Hit");
 		private JButton StayButton = new JButton("Stay");
 		private JButton ExitButton = new JButton("Exit");
-		private JTextField BetField = new JTextField(10);
+		private JButton StartButton = new JButton("Start");
+		private JTextField BetField = new JTextField();
+		private JLabel label = new JLabel("Bet:");
     	
     	GamePanel(JFrame frame) {
             this.setLayout(null);
             
-            HitButton.setBounds(190,630,75,25);
-            StayButton.setBounds(10, 600, 100, 25);
-            BetField.setBounds(10,500,100,25);
-    		ExitButton.setBounds(10, 630, 75, 25);
-
+            HitButton.setBounds(190,600,75,25);
+            StayButton.setBounds(270, 600, 75, 25);
+            BetField.setBounds(50,500,20,25);
+    		ExitButton.setBounds(10, 600, 75, 25);
+    		StartButton.setBounds(10, 550, 75, 25);
+    		label.setLocation(45, 500);
+    		
     		this.add(HitButton);
     		this.add(StayButton);
     		this.add(ExitButton);
@@ -96,20 +126,16 @@ public class GameRoomWindow {
     		HitButton.addActionListener((ActionListener) new ActionListener() {
     			@Override
 		        public void actionPerformed(ActionEvent e) {
-		          	if (lobbyOpened) {	
-		          		return;
-		          	}
-		          	else {
-		          		try {
-	              			Message newMsg = new Message(lobbyName, Type.JoinLobby);
-	  						objectOutput.writeObject(newMsg);
-	  						
-	  						gameRoom = new GameRoomWindow(client, socket, objectOutput, objectInput);
-	              		} catch (IOException e1) {
-	  						// TODO Auto-generated catch block
-	  						e1.printStackTrace();
-	  					}
-		          	}
+    				try {
+    					os.writeObject(new Message(Type.ViewPlayerInfo));
+    	    			Message msg = (Message) ois.readObject();
+    	    			String data = (String) msg.getData();
+    	    			String username = data.split(",")[0];
+    					os.writeObject(new Message(username, Type.Hit));
+              		} catch (IOException | ClassNotFoundException e1) {
+  						// TODO Auto-generated catch block
+  						e1.printStackTrace();
+  					}
     			}
 	    	});
     		
@@ -117,51 +143,60 @@ public class GameRoomWindow {
     			@Override
     	        public void actionPerformed(ActionEvent e) {
               		try {
-              			Message newMsg = new Message(Type.Logout);
-    						objectOutput.writeObject(newMsg);
-    						System.exit(0);
+              			Message newMsg = new Message(Type.ExitLobby);
+    					os.writeObject(newMsg);
+    					frame.setVisible(false);
+    					frame.dispose();
               		} catch (IOException e1) {
-    						// TODO Auto-generated catch block
-    						e1.printStackTrace();
-    					}
+    					// TODO Auto-generated catch block
+    					e1.printStackTrace();
+    				}
     			}
         	});
     		
-    		if (client.userRole.equals("DEALER")) {
-    			this.add(NewLobbyButton);
-    			NewLobbyButton.addActionListener((ActionListener) new ActionListener() {
+    		if (!client.userRole.equals("DEALER")) {
+    			this.add(label);
+    			this.add(BetField);
+    			BetField.addActionListener((ActionListener) new ActionListener() {
         			@Override
         			public void actionPerformed(ActionEvent e) {
-                  	
-        	          	String name = JOptionPane.showInputDialog("Enter Name Of Lobby");
-        				if (name == null) { return; }
-        				try {
-        					objectOutput.writeObject(new Message(name, Type.CreateLobby));
-        				} catch (IOException e1) {
-        					// TODO Auto-generated catch block
-        					e1.printStackTrace();
+        				if (setBet(BetField.getText())) {
+        					return;
         				}
-        				resetLobbiesJList();
-        	          }
+        			}
+        				
         		});
             }
-            else {
-            	this.add(ReloadButton);
-        		ReloadButton.addActionListener((ActionListener) new ActionListener() {
+    		else {
+    			this.add(StartButton);
+    			StartButton.addActionListener((ActionListener) new ActionListener() {
         			@Override
-    		        public void actionPerformed(ActionEvent e) {
-    	          		try {
-    	          			String input = JOptionPane.showInputDialog("Enter how much you want to load in your current balance");
-                  			Message newMsg = new Message(input, Type.ReloadBalance);
-      						objectOutput.writeObject(newMsg);
-      						setClientInfo(input);
-                  		} catch (IOException e1) {
-      						// TODO Auto-generated catch block
-      						e1.printStackTrace();
-      					}
+        			public void actionPerformed(ActionEvent e) {
+        				if (playersInfo.size() >= 2) {
+        					Player dealer = null;
+        					ArrayList<Player> players = new ArrayList<>();
+        					for (var player : playersInfo.entrySet()) {
+        		                if(player.getValue().isDealer) {
+        		                    dealer = (Player) player;
+        		                } else {
+        		                     players.add((Player) player);
+        		                }
+        		            }
+        					game = new BlackJack(dealer, players, os, ois);
+        					try {
+            					os.writeObject(new Message(Type.StartGame));
+                      		} catch (IOException e1) {
+          						// TODO Auto-generated catch block
+          						e1.printStackTrace();
+          					}
+        				}
+        				else {
+        					JOptionPane.showMessageDialog(frame, "There must be at least one more player to start");
+        				}
         			}
-    	    	});
-            }
+        				
+        		});
+    		}
 	    }
     	
     	@Override
@@ -169,9 +204,24 @@ public class GameRoomWindow {
             return new Dimension(200, 200);
         }
     	
-    	private String updateLobbyName(int indx) {
-   		 Lobby selectedLobby = lobbies.get(indx);
-   		 return selectedLobby.toString();
-   	 	}
+    	private boolean setBet(String amount) {
+    		int bet = Integer.parseInt(amount);
+    		
+    		if (bet <= 0) {
+    			JOptionPane.showMessageDialog(Window, "Please enter an amount > 0");
+    			return false;
+    		}
+    		try {
+    			os.writeObject(new Message(Type.ViewPlayerInfo));
+    			Message msg = (Message) ois.readObject();
+    			String data = (String) msg.getData();
+    			String username = data.split(",")[0];
+				os.writeObject(new Message(username + ", " + amount, Type.Bet));
+			} catch (IOException | ClassNotFoundException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+    		return true;
+    	}
     }
 }
