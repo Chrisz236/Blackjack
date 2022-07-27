@@ -6,13 +6,13 @@ public class Player {
 	private boolean hasLost;
 	private String hand[];
 	private String Name;
-	private double balance;
+	private float balance;
 	static int handCounter;
-	private double bet;
+	private float bet;
 	private boolean hitOrpass;
 	
 	
-	public Player(String name, double balance) {
+	public Player(String name, float balance) {
 		hand=new String[15];
 		setName(name);
 		setBalance(balance);
@@ -83,13 +83,13 @@ public class Player {
 
 
 
-	public double getBalance() {
+	public float getBalance() {
 		return balance;
 	}
 
 
 
-	public void setBalance(double balance) {
+	public void setBalance(float balance) {
 		this.balance = balance;
 	}
 	
@@ -100,13 +100,13 @@ public class Player {
 
 
 
-	public double getBet() {
+	public float getBet() {
 		return bet;
 	}
 
 
 
-	public void BetAmount(double bet) {
+	public void BetAmount(float bet) {
 		this.bet = bet;
 		setBalance(balance-bet);
 	}
