@@ -11,9 +11,7 @@ class PlayersTest {
 	
 
 
-//	bet=0;
-//	hitOrpass=false;
-//	setHasNoMoney();
+
 
 	     @Test
 	      public void ConstructorTest() {
