@@ -300,6 +300,11 @@ public class ServerThread implements Runnable {
                         send(msg);
                         break;
 
+                    case Bet:
+                        System.out.println("[game command - Bet]");
+                        send(msg);
+                        break;
+
                     case Stay:
                         System.out.println("[game command - Stay]");
                         send(msg);
