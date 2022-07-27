@@ -13,7 +13,7 @@ public class Player {
 	
 	
 	public Player(String name, double balance) {
-		hand[15]=" ";
+		hand=new String[15];
 		setName(name);
 		setBalance(balance);
 		handCounter=0;
@@ -21,6 +21,7 @@ public class Player {
 		hasLost=false;
 		bet=0;
 		hitOrpass=false;
+		setHasNoMoney();
 		
 	}
 
@@ -32,18 +33,18 @@ public class Player {
 
 
 
-	public boolean setHasNoMoney() {
-		if(getBalance()==0) {
-			return false;
+	public void setHasNoMoney() {
+		if(getBalance()<=0) {
+			hasNoMoney=true;
 		}
 		
 		else
-			return true;
+			hasNoMoney= false;
 	}
 
 
 
-	public boolean isHasLost() {
+	public boolean HasLost() {
 		return hasLost;
 	}
 
@@ -90,6 +91,11 @@ public class Player {
 
 	public void setBalance(double balance) {
 		this.balance = balance;
+	}
+	
+
+	public void UPDATEBalance(double balance) {
+		this.balance += balance;
 	}
 
 
