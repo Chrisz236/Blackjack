@@ -5,14 +5,39 @@ import org.junit.jupiter.api.Test;
 
 
 class PlayersTest {
+	
+	
+	
+	
 
 
+//	bet=0;
+//	hitOrpass=false;
+//	setHasNoMoney();
+
+	     @Test
+	      public void ConstructorTest() {
+		Player player=new Player("amanuel",5000);
+		
+		assertAll("check Default constructor initilization", () -> assertNotNull(player.getHand()), () -> assertEquals("amanuel", player.getName()),
+				() -> assertEquals(5000, player.getBalance()),() -> assertEquals(0, player.handCounter),() -> assertFalse( player.getHasNoMoney()),
+				() -> assertFalse( player.HasLost()),()-> assertEquals(0, player.getBet()),()->assertFalse( player.getHitOrpass()));
+	     }
 
 		@Test
-		public void HasMoney() {
+		public void HasMoneyTest() {
 			Player player=new Player("amanuel",5000);
 			
 			assertFalse(player.getHasNoMoney());
+		}
+		
+		
+
+		@Test
+		public void UpdateBalanceTest() {
+			Player player=new Player("amanuel",5000);
+			player.UPDATEBalance(4000);
+			assertEquals(9000, player.getBalance());
 		}
 		
 		@Test
@@ -40,12 +65,12 @@ class PlayersTest {
 			
 			
 			
-			assertAll("check if empty",
+			assertAll("check handcounter first",
 					() -> {
 			
 					  assertEquals(player.handCounter,3);
 
-					  assertAll("dvd Default constructor initilization", () -> assertEquals("A1", temp[0]), () -> assertEquals("K2", temp[1]),
+					  assertAll("Check hand", () -> assertEquals("A1", temp[0]), () -> assertEquals("K2", temp[1]),
 							() -> assertEquals("Q1", temp[2]));
 
 				});
