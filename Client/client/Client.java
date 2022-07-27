@@ -17,7 +17,7 @@ import server.Message;
 import server.Type;
 
 public class Client {
-	public static String userRole = "";
+	public String userRole = "";
 	public static boolean socketOpen = true;
 	
 	private static int port = 7777;
@@ -45,30 +45,28 @@ public class Client {
 			objectInputStream = new ObjectInputStream(inputStream);
 			
 			loginWindow = new LoginWindow(socket, objectInputStream, objectOutputStream, this);
-			//loginWindow.processCommands(); TODO re-enable once lobbyView is complete
-	         
+			loginWindow.processCommands();
+			
 	        if (socketOpen) {
 	        	lobbyViewWindow = new LobbyViewWindow(socket, objectOutputStream, objectInputStream,  this);
 	        }
 	        
-	        try {
-				while (socketOpen) {
-					Message newMsg = (Message) objectInputStream.readObject();
-					PrintMessage(newMsg);
-					if (newMsg.getType() == Type.Logout) {
-						if (newMsg.getType() == Type.Succeed) {
-							System.out.println("Closing");
-							socketOpen = false;
-							break;
-						}
-					} else if (newMsg.getType() == Type.CreateLobby){
-						lobbyViewWindow.NewLobbyMessage(newMsg);
-					}
-				}
-			} catch (ClassNotFoundException | IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+//	        try {
+//				while (socketOpen) {
+//					Message newMsg = (Message) objectInputStream.readObject();
+//					PrintMessage(newMsg);
+//					if (newMsg.getType() == Type.Logout) {
+//						if (newMsg.getType() == Type.Succeed) {
+//							System.out.println("Closing");
+//							socketOpen = false;
+//							break;
+//						}
+//					}
+//				}
+//			} catch (ClassNotFoundException | IOException e) {
+//				// TODO Auto-generated catch block
+//				e.printStackTrace();
+//			}
 		} catch (UnknownHostException e) {
 			System.out.println("Could not get ip address");
 			return;

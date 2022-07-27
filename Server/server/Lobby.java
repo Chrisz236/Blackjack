@@ -78,7 +78,7 @@ public class Lobby {
     /*
      * return the name of the current lobby room
      */
-    public String getLobbyName() {
+    public String toString() {
         return this.lobbyName;
     }
 

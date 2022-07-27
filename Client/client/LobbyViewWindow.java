@@ -19,10 +19,10 @@ import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Scanner;
 
-import javax.imageio.ImageIO;
+import javax.swing.Box;
 import javax.swing.BoxLayout;
-import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JList;
@@ -30,7 +30,6 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
-import javax.swing.Scrollable;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.event.ListSelectionEvent;
@@ -54,10 +53,8 @@ public class LobbyViewWindow {
 	private static JFrame Window = new JFrame("Lobby View Window");
 	private JList lobbiesJList = new JList();
 	private static LobbyPanel lobbyPanel = null;
-	private static LobbyList lobbyList = null;
 	//private static Lobby currentLobby = null;
-	private static JButton newLobbyButton = null;
-	private static LobbyManager lobbyManager = new LobbyManager();
+	private static LobbyManager lobbyManager;
 	private static GameRoomWindow gameRoom = null;
 	
 	public class Window extends JFrame {
@@ -70,28 +67,29 @@ public class LobbyViewWindow {
 		private JButton JoinLobbyButton = new JButton("Join");
 		private JButton ReloadButton = new JButton("Reload");
 		private JButton ExitButton = new JButton("Exit");
+		private JButton NewLobbyButton = new JButton("New Lobby");
 		private JScrollPane ScrollTextArea = new JScrollPane(lobbiesJList);
-		private TextArea clientInfo = new TextArea();
+		private JTextArea clientInfo = new JTextArea("");
 		private String lobbyName = "";
     	
     	LobbyPanel(JFrame frame) {
             this.setLayout(null);
-            clientInfo.setBounds(10, 10, 650, 25);
-    		JoinLobbyButton.setBounds(695,630,75,25); 
-    		ReloadButton.setBounds(670,10,100,25);
-    		ExitButton.setBounds(500, 20, 75, 25);
-    		ScrollTextArea.setBounds(10, 45, 760, 575);
-    		
-    		lobbiesJList.setListData(lobbies.toArray());
+            clientInfo.setBounds(10, 10, 160, 100);
+    		JoinLobbyButton.setBounds(190,630,75,25);
+    		NewLobbyButton.setBounds(10, 600, 100, 25);
+    		ReloadButton.setBounds(10,500,100,25);
+    		ExitButton.setBounds(10, 630, 75, 25);
+    		ScrollTextArea.setBounds(180, 45, 200, 575);
 
     		this.add(clientInfo);
     		this.add(JoinLobbyButton);
-    		this.add(ReloadButton);
     		this.add(ExitButton);
     		this.add(ScrollTextArea);
     		
     		clientInfo.setEditable(false);
-    		
+    		clientInfo.setLineWrap(true);
+    		setClientInfo("");
+    		resetLobbiesJList();
     		lobbiesJList.addListSelectionListener(new ListSelectionListener() { // whenever a list item is selected
    			 @Override
    			 public void valueChanged(ListSelectionEvent arg) {
@@ -118,7 +116,7 @@ public class LobbyViewWindow {
 	              			Message newMsg = new Message(lobbyName, Type.JoinLobby);
 	  						objectOutput.writeObject(newMsg);
 	  						
-	  						gameRoom = new GameRoomWindow(client);
+	  						gameRoom = new GameRoomWindow(client, socket, objectOutput, objectInput);
 	              		} catch (IOException e1) {
 	  						// TODO Auto-generated catch block
 	  						e1.printStackTrace();
@@ -129,33 +127,53 @@ public class LobbyViewWindow {
     		
     		ExitButton.addActionListener((ActionListener) new ActionListener() {
     			@Override
-		        public void actionPerformed(ActionEvent e) {
-	          		try {
-              			Message newMsg = new Message();
-              			newMsg.setType(Type.Exit);
-  						objectOutput.writeObject(newMsg);
-  						System.exit(0);
+    	        public void actionPerformed(ActionEvent e) {
+              		try {
+              			Message newMsg = new Message(Type.Logout);
+    						objectOutput.writeObject(newMsg);
+    						System.exit(0);
               		} catch (IOException e1) {
-  						// TODO Auto-generated catch block
-  						e1.printStackTrace();
-  					}
+    						// TODO Auto-generated catch block
+    						e1.printStackTrace();
+    					}
     			}
-	    	});
+        	});
     		
-    		ReloadButton.addActionListener((ActionListener) new ActionListener() {
-    			@Override
-		        public void actionPerformed(ActionEvent e) {
-	          		try {
-              			Message newMsg = new Message();
-              			newMsg.setType(Type.ReloadBalance);
-  						objectOutput.writeObject(newMsg);
-              		} catch (IOException e1) {
-  						// TODO Auto-generated catch block
-  						e1.printStackTrace();
-  					}
-    			}
-	    	});
-    		frame.pack();
+    		if (client.userRole.equals("DEALER")) {
+    			this.add(NewLobbyButton);
+    			NewLobbyButton.addActionListener((ActionListener) new ActionListener() {
+        			@Override
+        			public void actionPerformed(ActionEvent e) {
+                  	
+        	          	String name = JOptionPane.showInputDialog("Enter Name Of Lobby");
+        				if (name == null) { return; }
+        				try {
+        					objectOutput.writeObject(new Message(name, Type.CreateLobby));
+        				} catch (IOException e1) {
+        					// TODO Auto-generated catch block
+        					e1.printStackTrace();
+        				}
+        				resetLobbiesJList();
+        	          }
+        		});
+            }
+            else {
+            	this.add(ReloadButton);
+        		ReloadButton.addActionListener((ActionListener) new ActionListener() {
+        			@Override
+    		        public void actionPerformed(ActionEvent e) {
+    	          		try {
+    	          			String input = JOptionPane.showInputDialog("Enter how much you want to load in your current balance");
+                  			Message newMsg = new Message(input, Type.ReloadBalance);
+      						objectOutput.writeObject(newMsg);
+      						setClientInfo(input);
+                  		} catch (IOException e1) {
+      						// TODO Auto-generated catch block
+      						e1.printStackTrace();
+      					}
+        			}
+    	    	});
+            }
 	    }
     	
     	@Override
@@ -169,65 +187,17 @@ public class LobbyViewWindow {
     	
     	private String updateLobbyName(int indx) {
    		 Lobby selectedLobby = lobbyManager.lobbies.get(indx);
-   		 return selectedLobby.getLobbyName();
+   		 return selectedLobby.toString();
    	 	}
     }
-    
-    
-    public class LobbyList extends JPanel implements Scrollable {
-    	
-    	public static JButton NewButton(String str) {
-            GridBagConstraints GridBagConstraints = new GridBagConstraints();
-            GridBagConstraints.gridwidth = GridBagConstraints.REMAINDER;
-            GridBagConstraints.fill = GridBagConstraints.HORIZONTAL;
-            JButton button = new JButton(str);
-            lobbyList.add(button);
-            button.setPreferredSize(new Dimension(0, 20));
-            Window.setSize(899,  699);
-            Window.setSize(900,  700);
-            return button;
-    	}
-    	
-        public LobbyList() { 
-            setLayout(new GridLayout(ButtonCount, 0));
-	    }
-
-        @Override public Dimension getPreferredScrollableViewportSize() { return new Dimension(100, 100); }
-        @Override public int getScrollableUnitIncrement(Rectangle visibleRect, int orientation, int direction) { return 64; }
-        @Override public int getScrollableBlockIncrement(Rectangle visibleRect, int orientation, int direction) { return 64; }
-        @Override public boolean getScrollableTracksViewportWidth() { return true; }
-        @Override public boolean getScrollableTracksViewportHeight() { return false; }
-
-    }
-    
 
     public LobbyViewWindow(Socket sock, ObjectOutputStream output, ObjectInputStream input, Client Client) {
 		socket = sock;
 		objectOutput = output;
 		objectInput = input;
 		client =  Client;
-		lobbies = lobbyManager.lobbies;
-
+		
         lobbyPanel = new LobbyPanel(Window);
-        lobbyList = new LobbyList();
-        if (client.userRole == "dealer") {
-        	newLobbyButton = lobbyList.NewButton("Create Lobby");
-            
-            newLobbyButton.addActionListener((ActionListener) new ActionListener() {
-    			@Override
-    			public void actionPerformed(ActionEvent e) {
-              	
-    	          	String name = JOptionPane.showInputDialog("Enter Name Of Lobby");
-    				if (name == null) { return; }
-    				try {
-    					objectOutput.writeObject(new Message(name, Type.CreateLobby));
-    				} catch (IOException e1) {
-    					// TODO Auto-generated catch block
-    					e1.printStackTrace();
-    				}
-    	          }
-    		});
-        }
         
         EventQueue.invokeLater(new Runnable() {
             @Override
@@ -237,67 +207,48 @@ public class LobbyViewWindow {
                 } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | UnsupportedLookAndFeelException ex) {
                     ex.printStackTrace();
                 }
-
                 
                 Window.pack();
                 Window.setLocationRelativeTo(null);
                 Window.setVisible(true);
                 Window.setResizable(false);
-                Window.setSize(900,  700);
+                Window.setSize(400,  700);
                 Window.setLocation(100, 150);
                 Window.setDefaultLookAndFeelDecorated(true);
                 Window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
                 Window.add(lobbyPanel);
-                Window.add(new JScrollPane(lobbyList), BorderLayout.LINE_START);
             }
         });
     }
     
 	 private void resetLobbiesJList() {
+		 Message msg = null;
+		 try {
+			 objectOutput.writeObject(new Message(Type.GetLobbyManagerInfo));
+			 msg = (Message) objectInput.readObject();
+		 } catch (IOException | ClassNotFoundException e1) {
+			// TODO Auto-generated catch block
+			 e1.printStackTrace();
+		 }
+		 Scanner scan = new Scanner((String) msg.getData());
+		 scan.useDelimiter(",");
+		 scan.next();
+		 scan.next();
+		 while (scan.hasNext()) {
+			lobbies.add(new Lobby(scan.next()));
+		 }
+		 scan.close();
 		 lobbiesJList.setListData(lobbies.toArray());
 	 }
 	
 	public void NewLobbyMessage(Message msg) {
 				
-		Lobby newLobby = new Lobby(msg.getData());
-
-//		for (int i = 0; i < lobbies.size(); i++) {
-//			if (lobbies.get(i).getLobbyName().equals(newLobby.getLobbyName()) ) {
-//				return;
-//			}
-//		}
+		Lobby newLobby = new Lobby((String)msg.getData());
 		
-	    ButtonCount = ButtonCount + 1;
-	    lobbyList.setLayout(new GridLayout(ButtonCount, 0));
+//	    ButtonCount = ButtonCount + 1;
+//	    buttonList.setLayout(new GridLayout(ButtonCount, 0));
 	    
-		//JButton lobbyButton = lobbyList.NewButton(newLobby.getLobbyName());
 		lobbies.add(newLobby);
 		resetLobbiesJList();
-
-//		lobbyButton.addActionListener((ActionListener) new ActionListener() {
-//            @Override
-//            public void actionPerformed(ActionEvent e) {
-//            	lobbyOpened = true;
-//            	currentLobby = newLobby;
-//                
-//                Message newMsg = new Message();
-//    			//newMsg.setType(Type.Refresh); TODO add type of refresh for messages
-//				try {
-//					objectOutput.writeObject(newMsg);
-//				} catch (IOException e1) {
-//					// TODO Auto-generated catch block
-//					e1.printStackTrace();
-//				}
-//            }
-//        });
 	}
-	
-	//public static void setChatVisible(Boolean bool) {
-//      ScrollTextArea.setVisible(bool);
-//      textField.setVisible(bool);
-//      memberTextArea.setVisible(bool);
-//      ChatSendButton.setVisible(bool);
-//      AddUserSendButton.setVisible(bool);
-//		memberTextArea.setVisible(bool);
-	//}
 }

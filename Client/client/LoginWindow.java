@@ -16,13 +16,13 @@ import java.util.*;
 import server.Message;
 
 public class LoginWindow implements ClientUI {
-	private static Client client;
+	private Client client;
 	
 	//To determine successful login
 	private boolean login;
 	
 	//Socket Connections
-	private static Socket socket;
+	private Socket socket;
 	private static ObjectOutputStream out;
 	private static ObjectInputStream in;
 	
@@ -34,16 +34,16 @@ public class LoginWindow implements ClientUI {
 		this.client = client;
 	}
 	
-	public static Boolean Login(String username, String password) throws ClassNotFoundException {
+	public Boolean Login(String username, String password) {
 		try {
-			out.writeObject(new Message(username + ", " + password, Type.Login));
+			out.writeObject(new Message(username + "," + password, Type.Login));
 			Message newMsg = (Message) in.readObject();
 			
 			if (newMsg.getType() == Type.Succeed) {
-				Client.userRole = newMsg.getData();
+				client.userRole = (String) newMsg.getData();
 				return true;	
 			}
-		} catch (IOException e) {
+		} catch (IOException | ClassNotFoundException e) {
 			e.printStackTrace();
 		}
 	
@@ -52,9 +52,7 @@ public class LoginWindow implements ClientUI {
 	
 	@Override
 	public void processCommands() {
-		
-		while(this.client.socketOpen) {
-		
+		while(client.socketOpen) {
 			//Create two text boxes
 			JTextField fieldOne = new JTextField(15);
 			JTextField fieldTwo = new JTextField(15);
@@ -71,14 +69,16 @@ public class LoginWindow implements ClientUI {
 			int inputs = JOptionPane.showConfirmDialog(null, loginPanel,
 					"Enter User Credentials", JOptionPane.OK_CANCEL_OPTION);
 			
-			//Print to console (test)
 			if (inputs == JOptionPane.OK_OPTION) {
-				System.out.println("Username: " + fieldOne.getText());
-				System.out.println("Password: " + fieldTwo.getText());
+				login = Login(fieldOne.getText(), fieldTwo.getText());
 			}
 			
 			if (inputs == JOptionPane.CANCEL_OPTION) {
-				System.exit(0);
+				client.socketOpen = false;
+			}
+			
+			if (login) {
+				break;
 			}
 		}
 	}
