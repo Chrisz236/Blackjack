@@ -54,11 +54,11 @@ public class Lobby {
      * return a String contains every player's name in this game
      */
     public String displayClientNames() {
-        String s = "";
+        StringBuilder s = new StringBuilder();
         for (Player player : players) {
-            s += player.username + ", ";
+            s.append(player.username).append(", ");
         }
-        return s;
+        return s.toString();
     }
 
     /*
