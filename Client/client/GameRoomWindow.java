@@ -44,23 +44,23 @@ public class GameRoomWindow {
 		private JButton ReloadButton = new JButton("Reload");
 		private JButton ExitButton = new JButton("Exit");
 		private JButton NewLobbyButton = new JButton("New Lobby");
-		private JTextArea clientInfo = new JTextArea("");
+		//private JTextArea clientInfo = new JTextArea("");
 		private String lobbyName = "";
     	
     	LobbyPanel(JFrame frame) {
             this.setLayout(null);
-            clientInfo.setBounds(10, 10, 160, 100);
+            //clientInfo.setBounds(10, 10, 160, 100);
     		JoinLobbyButton.setBounds(190,630,75,25);
     		NewLobbyButton.setBounds(10, 600, 100, 25);
     		ReloadButton.setBounds(10,500,100,25);
     		ExitButton.setBounds(10, 630, 75, 25);
 
-    		this.add(clientInfo);
+    		//this.add(clientInfo);
     		this.add(JoinLobbyButton);
     		this.add(ExitButton);
     		
-    		clientInfo.setEditable(false);
-    		clientInfo.setLineWrap(true);
+    		//clientInfo.setEditable(false);
+    		//clientInfo.setLineWrap(true);
     		setClientInfo("");
 		
     		JoinLobbyButton.addActionListener((ActionListener) new ActionListener() {
