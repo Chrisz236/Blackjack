@@ -10,7 +10,7 @@ public class Dealer {
 	
 	
 	public Dealer(String name) {
-		hand[15]=" ";
+		hand= new String[15];
 		setName(name);
 		handCounter=0;
 		
@@ -22,6 +22,9 @@ public class Dealer {
 	}
 
 
+	public void clearHand() {
+		hand= new String[15];
+	}
 
 
 	public void setHand(String hand) {

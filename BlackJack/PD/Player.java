@@ -60,7 +60,9 @@ public class Player {
 		return hand;
 	}
 
-
+	public void clearHand() {
+		hand=new String[15];
+	}
 
 	public void setHand(String hand) {
 		
