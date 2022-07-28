@@ -5,7 +5,7 @@ import org.junit.jupiter.api.Test;
 
 
 
-class PlayersTest {
+public class PlayersTest {
 	
 	
 	

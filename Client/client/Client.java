@@ -33,7 +33,7 @@ public class Client {
 	private static LoginWindow loginWindow;
 	private static LobbyViewWindow lobbyViewWindow;
 	
-	public Client(String ip) throws ClassNotFoundException, IOException {
+	public Client(String ip) {
 		int port = 7777;
 		InetAddress serverIP;
 		try {
@@ -50,23 +50,6 @@ public class Client {
 	        if (socketOpen) {
 	        	lobbyViewWindow = new LobbyViewWindow(socket, objectOutputStream, objectInputStream,  this);
 	        }
-	        
-//	        try {
-//				while (socketOpen) {
-//					Message newMsg = (Message) objectInputStream.readObject();
-//					PrintMessage(newMsg);
-//					if (newMsg.getType() == Type.Logout) {
-//						if (newMsg.getType() == Type.Succeed) {
-//							System.out.println("Closing");
-//							socketOpen = false;
-//							break;
-//						}
-//					}
-//				}
-//			} catch (ClassNotFoundException | IOException e) {
-//				// TODO Auto-generated catch block
-//				e.printStackTrace();
-//			}
 		} catch (UnknownHostException e) {
 			System.out.println("Could not get ip address");
 			return;
@@ -74,11 +57,5 @@ public class Client {
 			System.out.println("Could not create socket");
 			return;
 		}	
-	}
-	
-	private static void PrintMessage(Message msg) {
-		System.out.println("Type: " + msg.getType());
-		System.out.println("Data: " + msg.getData());
-		System.out.println("-----------------------------------------------------------");
 	}
 }

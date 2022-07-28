@@ -35,6 +35,7 @@ import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
+import clienttest.TestClient;
 import server.Message;
 import server.Type;
 import server.Lobby;
@@ -85,8 +86,16 @@ public class LobbyViewWindow {
     		
     		clientInfo.setEditable(false);
     		clientInfo.setLineWrap(true);
-    		setClientInfo("");
+    		try {
+				objectOutput.writeObject(new Message(Type.ViewPlayerInfo));
+				Message msg = (Message) objectInput.readObject();
+				setClientInfo((String)msg.getData());
+      		} catch (IOException | ClassNotFoundException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
     		resetLobbiesJList();
+    		
     		lobbiesJList.addListSelectionListener(new ListSelectionListener() { // whenever a list item is selected
    			 @Override
    			 public void valueChanged(ListSelectionEvent arg) {
@@ -110,10 +119,9 @@ public class LobbyViewWindow {
 		          	}
 		          	else {
 		          		try {
-	              			Message newMsg = new Message(lobbyName, Type.JoinLobby);
+	  						gameRoom = new GameRoomWindow(client, objectOutput, objectInput);
+	  						Message newMsg = new Message(lobbyName, Type.JoinLobby);
 	  						objectOutput.writeObject(newMsg);
-	  						
-	  						gameRoom = new GameRoomWindow(client, socket, objectOutput, objectInput);
 	              		} catch (IOException e1) {
 	  						// TODO Auto-generated catch block
 	  						e1.printStackTrace();

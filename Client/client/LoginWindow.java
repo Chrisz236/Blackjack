@@ -6,10 +6,15 @@ package client;
  * 
  * File Description: GUI functionality for the login
  * window.
+ * 
+ * Modified by Andrew Bustos
  */
 
 import javax.swing.*;
+
+import clienttest.TestClient;
 import server.Type;
+
 import java.io.*;
 import java.net.*;
 import java.util.*;
@@ -41,7 +46,7 @@ public class LoginWindow implements ClientUI {
 			
 			if (newMsg.getType() == Type.Succeed) {
 				client.userRole = (String) newMsg.getData();
-				return true;	
+				return true;
 			}
 		} catch (IOException | ClassNotFoundException e) {
 			e.printStackTrace();
@@ -52,7 +57,7 @@ public class LoginWindow implements ClientUI {
 	
 	@Override
 	public void processCommands() {
-		while(client.socketOpen) {
+		while(client != null && client.socketOpen) {
 			//Create two text boxes
 			JTextField fieldOne = new JTextField(15);
 			JTextField fieldTwo = new JTextField(15);

@@ -1,10 +1,11 @@
+package clientdriver;
 
 import java.io.IOException;
 import java.util.Scanner;
 
 import client.Client;
 
-class ClientDriver {
+public class ClientDriver {
 	
 	public static void main(String[] args) throws ClassNotFoundException, IOException {
 		

@@ -37,7 +37,6 @@ import java.util.Map;
 
 public class GameRoomWindow {
 	private Client client;
-	private Socket socket;
 	private ObjectOutputStream os;
 	private ObjectInputStream ois;
 	private BlackJack game = null;
@@ -53,31 +52,29 @@ public class GameRoomWindow {
 		}
 	}
 	
-	public GameRoomWindow(Client client, Socket sock, ObjectOutputStream output, ObjectInputStream input) {
+	public GameRoomWindow(Client client, ObjectOutputStream output, ObjectInputStream input) {
 		this.client = client;
-		socket = sock;
 		os = output;
 		ois = input;
-		
+		gamePanel = new GamePanel(Window);
 		try {
 			os.writeObject(new Message(Type.ViewAllPlayerInfo));
 			Message msg = (Message) ois.readObject();
-			playersInfo = (Map<String, Player>) msg.getData();
+			playersInfo = (HashMap<String, Player>) msg.getData();
 		} catch (IOException | ClassNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		
-		gamePanel = new GamePanel(Window);
-		Message msg = null;
-		try {
-			msg = (Message) ois.readObject();
-			if (msg.getType() == Type.StartGame)
-				game.start();
-  		} catch (IOException | ClassNotFoundException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
-			}
+//		Message msg = null;
+//		try {
+//			msg = (Message) ois.readObject();
+//			if (msg.getType() == Type.StartGame)
+//				game.start();
+//  		} catch (IOException | ClassNotFoundException e1) {
+//			// TODO Auto-generated catch block
+//			e1.printStackTrace();
+//		}
 		
 		EventQueue.invokeLater(new Runnable() {
             @Override
