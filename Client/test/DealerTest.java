@@ -1,12 +1,14 @@
+package test;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 //import org.junit.jupiter.api.Test;
 import org.junit.Test;
 
-class DealerTest {
+public class DealerTest {
 
 	 @Test
-     public void ConstructorTest() {
+   public void ConstructorTest() {
 	Dealer dealer=new Dealer("amanuel");
 	
 	assertAll("check  constructor initilization", () -> assertNotNull(dealer.getHand()), () -> assertEquals("amanuel", dealer.getName()),

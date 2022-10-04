@@ -1,18 +1,10 @@
 package client;
 
-import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.EventQueue;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
 import java.awt.GridLayout;
-import java.awt.Rectangle;
-import java.awt.TextField;
-import java.awt.TextArea;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.image.BufferedImage;
-import java.io.File;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -21,8 +13,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
-import javax.swing.Box;
-import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JList;
@@ -35,11 +25,9 @@ import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
-import clienttest.TestClient;
 import server.Message;
 import server.Type;
 import server.Lobby;
-import server.LobbyManager;
 
 public class LobbyViewWindow {
 	private static Client client;

@@ -1,10 +1,10 @@
-package clienttest;
+package test;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import org.junit.jupiter.api.Test;
 
-import clientdriver.ClientDriver;
+import client.ClientDriver;
 
 public class TestClientDriver {
 	ClientDriver clientDriver = new ClientDriver();

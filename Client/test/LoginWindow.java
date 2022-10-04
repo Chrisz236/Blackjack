@@ -1,4 +1,4 @@
-package clienttest;
+package test;
 /*
  * Author: 		Diego Ureno
  * File: 		LoginWindow.java
@@ -9,8 +9,6 @@ package clienttest;
 
 import javax.swing.*;
 import java.io.*;
-import java.net.*;
-import java.util.*;
 
 public class LoginWindow implements LoginInterface {
 	

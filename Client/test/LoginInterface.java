@@ -1,4 +1,4 @@
-package clienttest;
+package test;
 /*
  * Author: 		Diego Ureno
  * File: 		LoginInterface.java

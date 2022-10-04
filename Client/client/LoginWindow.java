@@ -12,12 +12,11 @@ package client;
 
 import javax.swing.*;
 
-import clienttest.TestClient;
 import server.Type;
 
 import java.io.*;
 import java.net.*;
-import java.util.*;
+
 import server.Message;
 
 public class LoginWindow implements ClientUI {

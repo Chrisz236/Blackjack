@@ -1,4 +1,4 @@
-package clienttest;
+package test;
 public class Dealer {
 	
 	private String hand[];

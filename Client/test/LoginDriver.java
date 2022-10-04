@@ -1,4 +1,4 @@
-package clienttest;
+package test;
 /*
  * Author: 		Diego Ureno
  * File: 		LoginDriver.java
@@ -7,8 +7,6 @@ package clienttest;
  * Used to test GUI display. (Based on DVDAssignment 4)
  * 
  */
-
-import java.util.*;
 
 //Driver class for LoginWindow()
 public class LoginDriver {
